@@ -1,7 +1,7 @@
 ﻿<Window x:Class="GymManagementSystem.AdminLoginWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Admin Login"
+        Title="FlexFit Version 1.0"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         ResizeMode="CanMinimize">
@@ -82,8 +82,8 @@
         <!-- Modern TextBox Style -->
         <Style x:Key="ModernTextBox" TargetType="TextBox">
             <Setter Property="SnapsToDevicePixels" Value="True"/>
-            <Setter Property="BorderBrush" Value="#FF46E8C1"/>
-            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="BorderBrush" Value="Gray"/>
+            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="Foreground" Value="White"/>
@@ -100,7 +100,8 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                <Setter Property="BorderBrush" Value="#FF2ec4b6"/>
+                                <Setter Property="BorderBrush" Value="#FF46E8C1"/>
+                                <Setter Property="BorderThickness" Value="2"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.5"/>
@@ -113,8 +114,8 @@
         <!-- Modern PasswordBox Style -->
         <Style x:Key="ModernPasswordBox" TargetType="PasswordBox">
             <Setter Property="SnapsToDevicePixels" Value="True"/>
-            <Setter Property="BorderBrush" Value="#FF46E8C1"/>
-            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="BorderBrush" Value="Gray"/> 
+            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="Foreground" Value="White"/>
@@ -131,7 +132,8 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsKeyboardFocusWithin" Value="True">
-                                <Setter Property="BorderBrush" Value="#FF2ec4b6"/>
+                                <Setter Property="BorderBrush" Value="#FF46E8C1"/>
+                                <Setter Property="BorderThickness" Value="2"/>
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter Property="Opacity" Value="0.5"/>
@@ -146,8 +148,8 @@
         <!-- Fullscreen Gradient Background -->
         <Grid.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#232526" Offset="0.0"/>
-                <GradientStop Color="#414345" Offset="1.0"/>
+                <GradientStop Color="#262b38" Offset="0.0"/>
+                <GradientStop Color="#262b38" Offset="1.0"/>
             </LinearGradientBrush>
         </Grid.Background>
 
@@ -161,22 +163,22 @@
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                 <TextBlock Text="FlexFit"
                            Foreground="#FF46E8C1"
-                           FontSize="92"
+                           FontSize="86"
                            FontWeight="Bold"
                            FontFamily="Segoe UI "
-                           Margin="-80,0,0,0"
+                           Margin="-120,0,0,-10"
                            TextWrapping="Wrap"/>
                 <TextBlock Text="Gym Management System"
                            Foreground="#FFBFC0C0"
-                           FontSize="42"
+                           FontSize="40"
                            FontFamily="Segoe UI"
-                           Margin="-80,0,0,0"
+                           Margin="-120,0,0,0"
                            TextWrapping="Wrap"/>
                 <TextBlock Text="Welcome to your all-in-one gym management platform."
                            Foreground="#FF8A8A8A"
-                           FontSize="24"
+                           FontSize="20"
                            FontFamily="Segoe UI"
-                           Margin="-80,0,0,0"
+                           Margin="-120,0,0,0"
                            TextWrapping="Wrap"
                            TextAlignment="Center"/>
             </StackPanel>
@@ -185,7 +187,7 @@
         <!-- Right: Login/Signup -->
         <Grid Grid.Column="1">
             <!-- Card-like effect -->
-            <Border Background="#1e2027" CornerRadius="30" Margin="240,80,49,80" Padding="40" Effect="{StaticResource DropShadow}">
+            <Border Background="#1e2027" CornerRadius="30" Margin="240,80,49,80" Padding="40" >
                 <Grid>
                     <!-- Login Panel -->
                     <Grid x:Name="LoginGrid" Visibility="Visible">
@@ -277,6 +279,29 @@
                         </StackPanel>
                     </Grid>
                 </Grid>
+            </Border>
+            <Border x:Name="NotificationPanel"
+                Background="#FF232526"
+                CornerRadius="12"
+                Padding="16,8"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Margin="0,30,0,0"
+                Visibility="Collapsed"
+                Effect="{StaticResource DropShadow}"
+                Opacity="0"
+                Panel.ZIndex="1000">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock x:Name="NotificationIcon"
+                           FontSize="22"
+                           VerticalAlignment="Center"
+                           Margin="0,0,8,0"/>
+                            <TextBlock x:Name="NotificationText"
+                           Foreground="#FFFAFAFA"
+                           FontSize="16"
+                           FontFamily="Segoe UI"
+                           VerticalAlignment="Center"/>
+                        </StackPanel>
             </Border>
         </Grid>
     </Grid>

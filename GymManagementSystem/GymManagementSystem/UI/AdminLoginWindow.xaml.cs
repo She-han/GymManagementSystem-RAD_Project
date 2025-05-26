@@ -15,6 +15,7 @@ using GymManagementSystem.DAL;
 using GymManagementSystem.Utils;
 using Microsoft.Data.Sqlite;
 using GymManagementSystem.UI;
+using System.Windows.Media.Animation;
 
 namespace GymManagementSystem
 {
@@ -26,6 +27,43 @@ namespace GymManagementSystem
             DatabaseHelper.EnsureAdminsTableExists();
         }
 
+        // Show modern notification (call this instead of MessageBox.Show)
+        public async void ShowNotification(string message, string type = "info")
+        {
+            // Set icon and color based on type
+            switch (type)
+            {
+                case "success":
+                    NotificationIcon.Text = "✔️";
+                    NotificationPanel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF2ec4b6"));
+                    break;
+                case "error":
+                    NotificationIcon.Text = "⚠️";
+                    NotificationPanel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFe74c3c"));
+                    break;
+                default:
+                    NotificationIcon.Text = "ℹ️";
+                    NotificationPanel.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF232526"));
+                    break;
+            }
+
+            NotificationText.Text = message;
+            NotificationPanel.Visibility = Visibility.Visible;
+
+            // Fade in
+            var fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(200));
+            NotificationPanel.BeginAnimation(OpacityProperty, fadeIn);
+
+            // Wait 2.2 seconds
+            await Task.Delay(2200);
+
+            // Fade out
+            var fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(400));
+            fadeOut.Completed += (s, e) => { NotificationPanel.Visibility = Visibility.Collapsed; };
+            NotificationPanel.BeginAnimation(OpacityProperty, fadeOut);
+        }
+
+        // The rest of your code (event handlers)...
         private void ShowSignup_Click(object sender, RoutedEventArgs e)
         {
             LoginGrid.Visibility = Visibility.Collapsed;
@@ -45,7 +83,7 @@ namespace GymManagementSystem
 
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                MessageBox.Show("Please fill all fields.");
+                ShowNotification("Please fill all fields.", "error");
                 return;
             }
 
@@ -61,17 +99,22 @@ namespace GymManagementSystem
             long count = (long)cmd.ExecuteScalar();
             if (count == 1)
             {
-                MessageBox.Show("Login successful!");
-                // Replace with your dashboard window
-                DashboardWindow dashboard = new DashboardWindow();
-                dashboard.Show();
-                this.Close();
+                ShowNotification("Login successful!", "success");
+                // Delay navigation for user to see message
+                Task.Delay(800).ContinueWith(_ =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        var dashboard = new UI.DashboardWindow();
+                        dashboard.Show();
+                        this.Close();
+                    });
+                });
             }
             else
             {
-                MessageBox.Show("Invalid credentials.");
+                ShowNotification("Invalid credentials.", "error");
             }
-           // MessageBox.Show(System.IO.Path.GetFullPath("gym.db"));
         }
 
         private void Signup_Click(object sender, RoutedEventArgs e)
@@ -82,12 +125,12 @@ namespace GymManagementSystem
 
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword))
             {
-                MessageBox.Show("Please fill all fields.");
+                ShowNotification("Please fill all fields.", "error");
                 return;
             }
             if (password != confirmPassword)
             {
-                MessageBox.Show("Passwords do not match.");
+                ShowNotification("Passwords do not match.", "error");
                 return;
             }
 
@@ -102,7 +145,7 @@ namespace GymManagementSystem
             long exists = (long)checkCmd.ExecuteScalar();
             if (exists > 0)
             {
-                MessageBox.Show("Username already exists.");
+                ShowNotification("Username already exists.", "error");
                 return;
             }
 
@@ -110,10 +153,23 @@ namespace GymManagementSystem
             cmd.CommandText = "INSERT INTO Admins (Username, PasswordHash) VALUES (@username, @hash)";
             cmd.Parameters.AddWithValue("@username", username);
             cmd.Parameters.AddWithValue("@hash", hashedPassword);
-            cmd.ExecuteNonQuery();
+            int rows = cmd.ExecuteNonQuery();
 
-            MessageBox.Show("Signup successful! You can now login.");
-            ShowLogin_Click(null, null);
+            if (rows > 0)
+            {
+                ShowNotification("Signup successful! You can now login.", "success");
+                Task.Delay(1200).ContinueWith(_ =>
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        ShowLogin_Click(null, null);
+                    });
+                });
+            }
+            else
+            {
+                ShowNotification("Signup failed. Please try again.", "error");
+            }
         }
     }
 }
