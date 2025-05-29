@@ -2,6 +2,15 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="UI\AddEquipmentDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="UI\AddMemberDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="UI\AddTrainerDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="UI\AdminLoginWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
