@@ -16,11 +16,11 @@ namespace GymManagementSystem.UI
 {
     public partial class DashboardWindow : Window
     {
-        public DashboardWindow()
+        public DashboardWindow(string username)
         {
             InitializeComponent();
             // TODO: Replace with actual username from login
-            CurrentUserText.Text = "Admin";
+            CurrentUserText.Text = username;
             LoadDashboardData();
         }
 

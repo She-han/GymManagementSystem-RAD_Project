@@ -105,7 +105,7 @@ namespace GymManagementSystem
                 {
                     Dispatcher.Invoke(() =>
                     {
-                        var dashboard = new UI.DashboardWindow();
+                        var dashboard = new UI.DashboardWindow(username);
                         dashboard.Show();
                         this.Close();
                     });
