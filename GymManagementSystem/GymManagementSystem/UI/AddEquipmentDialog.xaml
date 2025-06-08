@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStyle="ToolWindow"
-        Title="Add Equipment" Height="386" Width="400" ResizeMode="NoResize" Background="#232526" WindowStartupLocation="CenterOwner">
+        Title="Add Equipment" Height="400" Width="400" ResizeMode="NoResize" Background="#232526" WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <Style TargetType="TextBox">
             <Setter Property="Margin" Value="0,0,0,12"/>
@@ -32,7 +32,7 @@
     <Grid Margin="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel>
