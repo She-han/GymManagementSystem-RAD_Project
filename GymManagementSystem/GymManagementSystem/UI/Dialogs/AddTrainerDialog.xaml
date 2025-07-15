@@ -1,4 +1,4 @@
-﻿<Window x:Class="GymManagementSystem.UI.AddTrainerDialog"
+﻿<Window x:Class="GymManagementSystem.UI.Dialogs.AddTrainerDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStyle="ToolWindow"

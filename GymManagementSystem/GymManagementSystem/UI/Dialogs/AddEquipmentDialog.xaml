@@ -1,4 +1,4 @@
-﻿<Window x:Class="GymManagementSystem.UI.AddEquipmentDialog"
+﻿<Window x:Class="GymManagementSystem.UI.Dialogs.AddEquipmentDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStyle="ToolWindow"

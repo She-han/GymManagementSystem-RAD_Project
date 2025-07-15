@@ -7,7 +7,7 @@ using GymManagementSystem.Services;
 using GymManagementSystem.DAL;
 using Microsoft.Data.Sqlite;
 
-namespace GymManagementSystem.UI
+namespace GymManagementSystem.UI.Dialogs
 {
     public partial class AddTrainerDialog : Window
     {

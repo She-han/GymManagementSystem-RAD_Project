@@ -11,6 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using GymManagementSystem.DAL;
+using GymManagementSystem.UI.Dialogs;
+using Microsoft.Data.Sqlite;
 
 namespace GymManagementSystem.UI
 {
@@ -19,41 +22,70 @@ namespace GymManagementSystem.UI
         public DashboardWindow(string username)
         {
             InitializeComponent();
-            // TODO: Replace with actual username from login
             CurrentUserText.Text = username;
             LoadDashboardData();
         }
 
         private void LoadDashboardData()
         {
-            // TODO: Replace with real database queries.
-
-            // Sample/fake data for UI demonstration:
-            TotalMembersText.Text = "108";
-            ActiveMembershipsText.Text = "96";
-            TotalIncomeText.Text = "$8,400";
-            TotalTrainersText.Text = "7";
-
-            // Add sample recent activity
-            RecentActivityList.ItemsSource = new List<string>
+            try
             {
-                "🟢 John Doe renewed membership (1 hour ago)",
-                "🟢 Payment received: $50 from Jane Smith",
-                "🟢 New member registered: Alex Lee",
-                "🔴 Payment overdue: Mark Brown",
-                "🟢 Trainer Sarah added HIIT session (yesterday)",
-            };
+                using var conn = DatabaseHelper.GetConnection();
+                conn.Open();
+
+                // Get actual member count
+                var memberCmd = new SqliteCommand("SELECT COUNT(*) FROM Members", conn);
+                TotalMembersText.Text = memberCmd.ExecuteScalar().ToString();
+
+                // Get active memberships (same as total members for now)
+                ActiveMembershipsText.Text = TotalMembersText.Text;
+
+                // Get trainer count
+                var trainerCmd = new SqliteCommand("SELECT COUNT(*) FROM Trainers", conn);
+                TotalTrainersText.Text = trainerCmd.ExecuteScalar().ToString();
+
+                // Get total income (placeholder - you can implement based on payments)
+                TotalIncomeText.Text = "$8,400";
+
+                // Add sample recent activity
+                RecentActivityList.ItemsSource = new List<string>
+                {
+                    "🟢 New member registered (1 hour ago)",
+                    "🟢 Payment received: $50 from member",
+                    "🟢 Trainer added to system",
+                    "🔴 Payment reminder sent",
+                    "🟢 Equipment maintenance completed",
+                };
+            }
+            catch (Exception ex)
+            {
+                // Sample data if database error
+                TotalMembersText.Text = "0";
+                ActiveMembershipsText.Text = "0";
+                TotalTrainersText.Text = "0";
+                TotalIncomeText.Text = "$0";
+
+                RecentActivityList.ItemsSource = new List<string>
+                {
+                    "⚠️ Error loading data from database"
+                };
+            }
         }
 
         private void Dashboard_Click(object sender, RoutedEventArgs e)
         {
-            // Already on dashboard
+            // Show dashboard content and hide others
+            DashboardContent.Visibility = Visibility.Visible;
+            MemberManagementContent.Visibility = Visibility.Collapsed;
+            // Refresh dashboard data
+            LoadDashboardData();
         }
 
         private void Members_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Open Members management window/page
-            MessageBox.Show("Members page coming soon!");
+            // Hide dashboard content and show member management
+            DashboardContent.Visibility = Visibility.Collapsed;
+            MemberManagementContent.Visibility = Visibility.Visible;
         }
 
         private void Trainers_Click(object sender, RoutedEventArgs e)
@@ -91,14 +123,22 @@ namespace GymManagementSystem.UI
         {
             var dialog = new AddMemberDialog();
             dialog.Owner = this;
-            dialog.ShowDialog();
+            if (dialog.ShowDialog() == true)
+            {
+                // Refresh dashboard data after adding member
+                LoadDashboardData();
+            }
         }
 
         private void AddTrainerButton_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new AddTrainerDialog();
             dialog.Owner = this;
-            dialog.ShowDialog();
+            if (dialog.ShowDialog() == true)
+            {
+                // Refresh dashboard data after adding trainer
+                LoadDashboardData();
+            }
         }
 
         private void AddEquipmentButton_Click(object sender, RoutedEventArgs e)
@@ -107,6 +147,5 @@ namespace GymManagementSystem.UI
             dialog.Owner = this;
             dialog.ShowDialog();
         }
-
     }
 }

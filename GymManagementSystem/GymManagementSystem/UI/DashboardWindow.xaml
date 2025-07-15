@@ -1,17 +1,21 @@
 ﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="av" x:Class="GymManagementSystem.UI.DashboardWindow"
+        xmlns:av="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:local="clr-namespace:GymManagementSystem.UI"
+        mc:Ignorable="av" 
+        x:Class="GymManagementSystem.UI.DashboardWindow"
         Title="FlexFit Version 1.0"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         ResizeMode="CanMinimize"
-        Background="#232526">
+        Background="#F5F5F5">
     <Window.Resources>
-        <DropShadowEffect x:Key="CardShadow" BlurRadius="14" Color="#66000000" ShadowDepth="2" Direction="270" Opacity="0.25"/>
+        <DropShadowEffect x:Key="CardShadow" BlurRadius="14" Color="#33000000" ShadowDepth="2" Direction="270" Opacity="0.15"/>
         <Style x:Key="SidebarButton" TargetType="{x:Type Button}">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#FFFAFAFA"/>
+            <Setter Property="Foreground" Value="#333333"/>
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="Height" Value="48"/>
@@ -31,7 +35,7 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="#FF2ec4b6"/>
-                                <Setter Property="Foreground" Value="#232526"/>
+                                <Setter Property="Foreground" Value="White"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter Property="Background" Value="#FF18a999"/>
@@ -47,24 +51,24 @@
             <Setter Property="Margin" Value="0,0,30,0"/>
             <Setter Property="MinWidth" Value="280"/>
             <Setter Property="CornerRadius" Value="18"/>
-            <Setter Property="Background" Value="#262b38"/>
+            <Setter Property="Background" Value="White"/>
             <Setter Property="Effect" Value="{StaticResource CardShadow}"/>
         </Style>
         <Style x:Key="CardTitle" TargetType="{x:Type TextBlock}">
-            <Setter Property="Foreground" Value="#FFBFC0C0"/>
+            <Setter Property="Foreground" Value="#666666"/>
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
         </Style>
         <Style x:Key="CardValue" TargetType="{x:Type TextBlock}">
-            <Setter Property="Foreground" Value="#FF46E8C1"/>
+            <Setter Property="Foreground" Value="#FF2ec4b6"/>
             <Setter Property="FontSize" Value="36"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
         </Style>
         <!-- Modern Large Button for Panel -->
         <Style x:Key="LargePanelButton" TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="#1B998B"/>
-            <Setter Property="Foreground" Value="#BF232526"/>
+            <Setter Property="Background" Value="#FF2ec4b6"/>
+            <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="Medium"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="22"/>
@@ -83,7 +87,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FF2ec4b6"/>
+                                <Setter Property="Background" Value="#FF46E8C1"/>
                                 <Setter Property="Foreground" Value="White"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
@@ -96,8 +100,8 @@
             </Setter>
         </Style>
         <Style x:Key="LargerPanelButton" TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="#1B998B"/>
-            <Setter Property="Foreground" Value="#BF232526"/>
+            <Setter Property="Background" Value="#FF2ec4b6"/>
+            <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="Medium"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="22"/>
@@ -116,7 +120,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FF2ec4b6"/>
+                                <Setter Property="Background" Value="#FF46E8C1"/>
                                 <Setter Property="Foreground" Value="White"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
@@ -129,23 +133,25 @@
             </Setter>
         </Style>
     </Window.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="260"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+
         <!-- Sidebar -->
-        <Border Background="#1A1B27" >
+        <Border Background="White" BorderBrush="#E0E0E0" BorderThickness="0,0,1,0">
             <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
                 <StackPanel Margin="0,24,0,36" VerticalAlignment="Top">
                     <TextBlock Text="FlexFit"
-                               Foreground="#FF46E8C1"
+                               Foreground="#FF2ec4b6"
                                FontSize="36"
                                FontWeight="Bold"
                                FontFamily="Tahoma"
                                HorizontalAlignment="Center"/>
                     <TextBlock Text="Gym Management System"
-                               Foreground="#FFBFC0C0"
+                               Foreground="#666666"
                                FontSize="14"
                                HorizontalAlignment="Center"
                                Margin="0,0,0,0"/>
@@ -158,133 +164,148 @@
                 <Button Tag="⚙️" Content="Settings" Style="{StaticResource SidebarButton}" Click="Settings_Click"/>
                 <Button Tag="🚪" Content="Logout" Style="{StaticResource SidebarButton}" Click="Logout_Click" />
                 <StackPanel VerticalAlignment="Bottom" Margin="0,300,0,0">
-                    <TextBlock Text="© 2025 FlexFit" Foreground="#444" FontSize="12" HorizontalAlignment="Center" Margin="0,16,0,0"/>
+                    <TextBlock Text="© 2025 FlexFit" Foreground="#999999" FontSize="12" HorizontalAlignment="Center" Margin="0,16,0,0"/>
                 </StackPanel>
             </StackPanel>
         </Border>
+
         <!-- Main Content -->
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="70"/>
-                <!-- 0: Top Bar -->
-                <RowDefinition Height="Auto"/>
-                <!-- 1: Dashboard Cards -->
-                <RowDefinition Height="Auto"/>
-                <!-- 2: Large Panel Buttons -->
-                <RowDefinition Height="*"/>
-                <!-- 3: Recent Activity (fills remaining) -->
-            </Grid.RowDefinitions>
-            <!-- Top Bar -->
-            <Border Grid.Row="0" Height="70" CornerRadius="0,0,16,16" Margin="0,0,0,18" Effect="{StaticResource CardShadow}">
-                <DockPanel LastChildFill="True" VerticalAlignment="Center">
-                    <TextBlock Text="Dashboard" 
-                               Foreground="#FFFAFAFA" 
-                               FontSize="24" 
-                               FontWeight="Bold" 
-                               FontFamily="Segoe UI" 
-                               VerticalAlignment="Center"
-                               Margin="24,0,0,0" 
-                               DockPanel.Dock="Left"/>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" DockPanel.Dock="Right" Margin="0,0,24,0">
-                        <TextBlock Text="Welcome, " Foreground="#BFC0C0" FontSize="16" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="CurrentUserText" Text="Admin" Foreground="#FF46E8C1" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </DockPanel>
-            </Border>
-            <!-- Dashboard Cards -->
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="32,10,0,32" HorizontalAlignment="Stretch">
-                <Border Style="{StaticResource DashboardCard}">
-                    <StackPanel>
-                        <TextBlock Text="Total Members" Style="{StaticResource CardTitle}"/>
-                        <TextBlock x:Name="TotalMembersText" Text="0" Style="{StaticResource CardValue}"/>
-                    </StackPanel>
+        <Grid Grid.Column="1" x:Name="MainContentGrid">
+            <!-- Dashboard Content (initially visible) -->
+            <Grid x:Name="DashboardContent" Visibility="Visible">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="70"/>
+                    <!-- 0: Top Bar -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- 1: Dashboard Cards -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- 2: Large Panel Buttons -->
+                    <RowDefinition Height="*"/>
+                    <!-- 3: Recent Activity (fills remaining) -->
+                </Grid.RowDefinitions>
+
+                <!-- Top Bar -->
+                <Border Grid.Row="0" Height="70" Background="#F5F5F5" CornerRadius="0,0,16,16" Margin="0,0,0,18" Effect="{StaticResource CardShadow}">
+                    <DockPanel LastChildFill="True" VerticalAlignment="Center">
+                        <TextBlock Text="Dashboard" 
+                                   Foreground="#333333" 
+                                   FontSize="28" 
+                                   FontWeight="Bold" 
+                                   FontFamily="Segoe UI" 
+                                   VerticalAlignment="Center"
+                                   Margin="24,0,0,0" 
+                                   DockPanel.Dock="Left"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" DockPanel.Dock="Right" Margin="0,0,24,0">
+                            <TextBlock Text="Welcome, " Foreground="#666666" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="CurrentUserText" Text="Admin" Foreground="#FF2ec4b6" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </DockPanel>
                 </Border>
-                <Border Style="{StaticResource DashboardCard}">
-                    <StackPanel>
-                        <TextBlock Text="Active Memberships" Style="{StaticResource CardTitle}"/>
-                        <TextBlock x:Name="ActiveMembershipsText" Text="0" Style="{StaticResource CardValue}"/>
-                    </StackPanel>
-                </Border>
-                <Border Style="{StaticResource DashboardCard}">
-                    <StackPanel>
-                        <TextBlock Text="Trainers" Style="{StaticResource CardTitle}"/>
-                        <TextBlock x:Name="TotalTrainersText" Text="0" Style="{StaticResource CardValue}"/>
-                    </StackPanel>
-                </Border>
-                <Border Style="{StaticResource DashboardCard}">
-                    <StackPanel>
-                        <TextBlock Text="Total Income (This month)" Style="{StaticResource CardTitle}"/>
-                        <TextBlock x:Name="TotalIncomeText" Text="$0" Style="{StaticResource CardValue}"/>
-                    </StackPanel>
-                </Border>
-            </StackPanel>
-            <!-- Large Panel Buttons -->
-            <Grid Grid.Row="2" Margin="32,10,32,24">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="2*"/>
-                </Grid.ColumnDefinitions>
-                <!-- Left: Mark Attendance -->
-                <StackPanel Grid.Column="0" Margin="0,0,0,0" VerticalAlignment="Top" >
-                    <Button Tag ="✍️"
-                        Content="Mark Attendance"
-                Style="{StaticResource LargerPanelButton}"
-                FontSize="24"
-                Height="200"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                BorderThickness="0"
-              />
-                </StackPanel>
-                <!-- Center: Make Payment -->
-                <StackPanel Grid.Column="1" Margin="0,0,0,0" VerticalAlignment="Top">
-                    <Button 
-                Tag="💳"
-                Content="Make Payments"
-                Style="{StaticResource LargerPanelButton}"
-                FontSize="24"
-                Height="200"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                BorderThickness="0"
-              />
-                </StackPanel>
-                <!-- Right: Add Buttons vertically stacked -->
-                <StackPanel Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0">
-                    <Button Content="➕ Add Member"
-                Style="{StaticResource LargePanelButton}"
-                Height="60"
-                Margin="0,0,0,0"
-                Click="AddMemberButton_Click"/>
-                    <Button Content="➕ Add Trainer"
-                Style="{StaticResource LargePanelButton}"
-                Height="60"
-                Margin="0,10,0,0"
-                Click="AddTrainerButton_Click"/>
-                    <Button Content="➕ Add Equipment"
-                Style="{StaticResource LargePanelButton}"
-                Height="60"
-                Margin="0,10,0,0"
-                Click="AddEquipmentButton_Click"/>
-                </StackPanel>
-            </Grid>
-            <!-- Recent Activity -->
-            <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="32,0,32,32">
-                    <Border Background="#262b38" CornerRadius="16" Padding="24" Effect="{StaticResource CardShadow}">
+
+                <!-- Dashboard Cards -->
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="32,10,0,32" HorizontalAlignment="Stretch">
+                    <Border Style="{StaticResource DashboardCard}">
                         <StackPanel>
-                            <TextBlock Text="Recent Activity" Foreground="#FFBFC0C0" FontSize="20" FontWeight="Bold" Margin="0,0,0,12"/>
-                            <ListBox x:Name="RecentActivityList" Background="Transparent" BorderThickness="0" 
-                                     FontSize="15" Foreground="#FFFAFAFA" 
-                                     FontFamily="Segoe UI"/>
+                            <TextBlock Text="Total Members" Style="{StaticResource CardTitle}"/>
+                            <TextBlock x:Name="TotalMembersText" Text="0" Style="{StaticResource CardValue}"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource DashboardCard}">
+                        <StackPanel>
+                            <TextBlock Text="Active Memberships" Style="{StaticResource CardTitle}"/>
+                            <TextBlock x:Name="ActiveMembershipsText" Text="0" Style="{StaticResource CardValue}"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource DashboardCard}">
+                        <StackPanel>
+                            <TextBlock Text="Trainers" Style="{StaticResource CardTitle}"/>
+                            <TextBlock x:Name="TotalTrainersText" Text="0" Style="{StaticResource CardValue}"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource DashboardCard}">
+                        <StackPanel>
+                            <TextBlock Text="Total Income (This month)" Style="{StaticResource CardTitle}"/>
+                            <TextBlock x:Name="TotalIncomeText" Text="$0" Style="{StaticResource CardValue}"/>
                         </StackPanel>
                     </Border>
                 </StackPanel>
-            </ScrollViewer>
-            <!-- Notification Panel (floating center) -->
-            <Border x:Name="NotificationPanel"
-                Background="#FF232526"
+
+                <!-- Large Panel Buttons -->
+                <Grid Grid.Row="2" Margin="32,10,32,24">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- Left: Mark Attendance -->
+                    <StackPanel Grid.Column="0" Margin="0,0,0,0" VerticalAlignment="Top" >
+                        <Button Tag ="✍️"
+                                Content="Mark Attendance"
+                                Style="{StaticResource LargerPanelButton}"
+                                FontSize="24"
+                                Height="200"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                BorderThickness="0"/>
+                    </StackPanel>
+                    <!-- Center: Make Payment -->
+                    <StackPanel Grid.Column="1" Margin="0,0,0,0" VerticalAlignment="Top">
+                        <Button Tag="💳"
+                                Content="Make Payments"
+                                Style="{StaticResource LargerPanelButton}"
+                                FontSize="24"
+                                Height="200"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                BorderThickness="0"/>
+                    </StackPanel>
+                    <!-- Right: Add Buttons vertically stacked -->
+                    <StackPanel Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="0">
+                        <Button Content="➕ Add Member"
+                                Style="{StaticResource LargePanelButton}"
+                                Height="60"
+                                Margin="0,0,0,0"
+                                Click="AddMemberButton_Click"/>
+                        <Button Content="➕ Add Trainer"
+                                Style="{StaticResource LargePanelButton}"
+                                Height="60"
+                                Margin="0,10,0,0"
+                                Click="AddTrainerButton_Click"/>
+                        <Button Content="➕ Add Equipment"
+                                Style="{StaticResource LargePanelButton}"
+                                Height="60"
+                                Margin="0,10,0,0"
+                                Click="AddEquipmentButton_Click"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Recent Activity -->
+                <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="32,0,32,32">
+                        <Border Background="White" CornerRadius="16" Padding="24" Effect="{StaticResource CardShadow}">
+                            <StackPanel>
+                                <TextBlock Text="Recent Activity" Foreground="#333333" FontSize="20" FontWeight="Bold" Margin="0,0,0,12"/>
+                                <ListBox x:Name="RecentActivityList" Background="Transparent" BorderThickness="0" 
+                                         FontSize="15" Foreground="#333333" 
+                                         FontFamily="Segoe UI"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+
+            <!-- Member Management Content (initially hidden) -->
+            <Grid x:Name="MemberManagementContent" Visibility="Collapsed">
+                <local:MemberManagementControl/>
+            </Grid>
+        </Grid>
+
+        <!-- Notification Panel (floating center) - moved outside main content grid -->
+        <Border x:Name="NotificationPanel"
+                Grid.Column="1"
+                Background="White"
+                BorderBrush="#E0E0E0"
+                BorderThickness="1"
                 CornerRadius="12"
                 Padding="16,8"
                 VerticalAlignment="Center"
@@ -294,18 +315,17 @@
                 Effect="{StaticResource CardShadow}"
                 Opacity="0"
                 Panel.ZIndex="1000">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <TextBlock x:Name="NotificationIcon"
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock x:Name="NotificationIcon"
                            FontSize="22"
                            VerticalAlignment="Center"
                            Margin="0,0,8,0"/>
-                    <TextBlock x:Name="NotificationText"
-                           Foreground="#FFFAFAFA"
+                <TextBlock x:Name="NotificationText"
+                           Foreground="#333333"
                            FontSize="16"
                            FontFamily="Segoe UI"
                            VerticalAlignment="Center"/>
-                </StackPanel>
-            </Border>
-        </Grid>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>
