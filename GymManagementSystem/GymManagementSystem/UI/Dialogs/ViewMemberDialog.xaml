@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         WindowStyle="ToolWindow"
-        Title="Member Details" Height="600" Width="400" 
+        Title="Member Details" Height="650" Width="800" 
         ResizeMode="NoResize" Background="#F5F5F5" 
         WindowStartupLocation="CenterOwner">
     <Window.Resources>
@@ -19,37 +19,150 @@
             <Setter Property="Margin" Value="0,0,0,10"/>
             <Setter Property="TextWrapping" Value="Wrap"/>
         </Style>
+
+        <Style TargetType="TextBlock" x:Key="SectionHeaderStyle">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#FF2ec4b6"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+        </Style>
+
+        <!-- Close Button Style -->
+        <Style x:Key="CloseButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FF2ec4b6"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FF46E8C1"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#FF18a999"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <Border Background="White" CornerRadius="10" Margin="20" Padding="30">
-        <StackPanel>
-            <TextBlock Text="Member Information" FontSize="22" FontWeight="Bold" 
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Title -->
+            <TextBlock Grid.Row="0" Text="Member Information" FontSize="22" FontWeight="Bold" 
                        Foreground="#FF2ec4b6" HorizontalAlignment="Center" Margin="0,0,0,20"/>
 
-            <TextBlock Text="Member ID:" Style="{StaticResource LabelStyle}"/>
-            <TextBlock x:Name="MemberIdText" Style="{StaticResource ValueStyle}"/>
+            <!-- Main Content Grid -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Full Name:" Style="{StaticResource LabelStyle}"/>
-            <TextBlock x:Name="FullNameText" Style="{StaticResource ValueStyle}"/>
+                <!-- Left Side - Member Details -->
+                <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="Personal Information" Style="{StaticResource SectionHeaderStyle}"/>
 
-            <TextBlock Text="Contact Number:" Style="{StaticResource LabelStyle}"/>
-            <TextBlock x:Name="ContactText" Style="{StaticResource ValueStyle}"/>
+                        <TextBlock Text="Member ID:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock x:Name="MemberIdText" Style="{StaticResource ValueStyle}"/>
 
-            <TextBlock Text="Trainer Name:" Style="{StaticResource LabelStyle}"/>
-            <TextBlock x:Name="TrainerText" Style="{StaticResource ValueStyle}"/>
+                        <TextBlock Text="Full Name:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock x:Name="FullNameText" Style="{StaticResource ValueStyle}"/>
 
-            <TextBlock Text="Join Date:" Style="{StaticResource LabelStyle}"/>
-            <TextBlock x:Name="JoinDateText" Style="{StaticResource ValueStyle}"/>
+                        <TextBlock Text="Contact Number:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock x:Name="ContactText" Style="{StaticResource ValueStyle}"/>
 
-            <TextBlock Text="Subscription Type:" Style="{StaticResource LabelStyle}"/>
-            <TextBlock x:Name="SubscriptionText" Style="{StaticResource ValueStyle}"/>
+                        <TextBlock Text="Trainer Name:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock x:Name="TrainerText" Style="{StaticResource ValueStyle}"/>
 
-            <TextBlock Text="Medical History:" Style="{StaticResource LabelStyle}"/>
-            <TextBlock x:Name="MedicalHistoryText" Style="{StaticResource ValueStyle}"/>
+                        <TextBlock Text="Join Date:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock x:Name="JoinDateText" Style="{StaticResource ValueStyle}"/>
 
-            <Button Content="Close" Width="100" Height="35" Margin="0,20,0,0" 
-                    Background="#FF2ec4b6" Foreground="White" 
-                    FontWeight="Bold" Click="Close_Click"/>
-        </StackPanel>
+                        <TextBlock Text="Subscription Type:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock x:Name="SubscriptionText" Style="{StaticResource ValueStyle}"/>
+
+                        <TextBlock Text="Medical History:" Style="{StaticResource LabelStyle}"/>
+                        <TextBlock x:Name="MedicalHistoryText" Style="{StaticResource ValueStyle}"/>
+
+                        <!-- Attendance Summary -->
+                        <TextBlock Text="Attendance Summary" Style="{StaticResource SectionHeaderStyle}" Margin="0,20,0,10"/>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Background="#F8F9FA" BorderBrush="#E0E0E0" 
+                                    BorderThickness="1" CornerRadius="6" Padding="10" Margin="0,0,5,0" Width="130">
+                                <StackPanel>
+                                    <TextBlock Text="Total Days" FontSize="12" Foreground="#666666" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="TotalDaysText" Text="0" FontSize="20" FontWeight="Bold" 
+                                               Foreground="#FF2ec4b6" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="1" Background="#F8F9FA" BorderBrush="#E0E0E0" 
+                                    BorderThickness="1" CornerRadius="6" Padding="10" Margin="5,0,0,0" Width="130" >
+                                <StackPanel>
+                                    <TextBlock Text="This Month" FontSize="12" Foreground="#666666" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="ThisMonthText" Text="0" FontSize="20" FontWeight="Bold" 
+                                               Foreground="#FF2ec4b6" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Separator -->
+                <Rectangle Grid.Column="1" Fill="#E0E0E0" Width="1" HorizontalAlignment="Center"/>
+
+                <!-- Right Side - Attendance Records -->
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Attendance Records" Style="{StaticResource SectionHeaderStyle}"/>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" MaxHeight="400">
+                        <StackPanel x:Name="AttendanceContainer">
+                            <!-- Attendance records will be populated here -->
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- No attendance message -->
+                    <TextBlock Grid.Row="1" x:Name="NoAttendanceMessage" 
+                               Text="No attendance records found for this member."
+                               FontSize="14" Foreground="#999999" 
+                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                               Visibility="Collapsed"/>
+                </Grid>
+            </Grid>
+
+            <!-- Close Button -->
+            <Button Grid.Row="2" Content="Close" Width="200" Height="35" Margin="0,20,0,0" 
+                    Style="{StaticResource CloseButtonStyle}" 
+                    Click="Close_Click" HorizontalAlignment="Center"/>
+        </Grid>
     </Border>
 </Window>
