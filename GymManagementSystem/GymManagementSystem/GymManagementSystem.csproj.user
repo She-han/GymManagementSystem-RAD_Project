@@ -20,6 +20,9 @@
     <Compile Update="UI\Dialogs\EditMemberDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="UI\Dialogs\MarkAttendanceDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="UI\Dialogs\ViewMemberDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

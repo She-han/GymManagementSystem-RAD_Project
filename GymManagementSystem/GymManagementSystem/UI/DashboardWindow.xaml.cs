@@ -119,6 +119,13 @@ namespace GymManagementSystem.UI
             this.Close();
         }
 
+        private void MarkAttendance_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new MarkAttendanceDialog();
+            dialog.Owner = this;
+            dialog.ShowDialog();
+        }
+
         private void AddMemberButton_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new AddMemberDialog();

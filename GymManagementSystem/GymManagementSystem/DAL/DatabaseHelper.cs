@@ -11,11 +11,31 @@ namespace GymManagementSystem.DAL
 {
     public static class DatabaseHelper
     {
-        private const string ConnectionString = "Data Source=gym.db";
+        private const string ConnectionString = "Data Source=gym.db;Cache=Shared;";
+        private static readonly object _lock = new object();
 
         public static SqliteConnection GetConnection()
         {
-            return new SqliteConnection(ConnectionString);
+            var connection = new SqliteConnection(ConnectionString);
+            return connection;
+        }
+
+        // Initialize database with WAL mode for better concurrency
+        public static void InitializeDatabase()
+        {
+            lock (_lock)
+            {
+                using var conn = GetConnection();
+                conn.Open();
+
+                // Enable WAL mode for better concurrent access
+                using var pragmaCmd = conn.CreateCommand();
+                pragmaCmd.CommandText = "PRAGMA journal_mode=WAL; PRAGMA synchronous=NORMAL; PRAGMA cache_size=10000;";
+                pragmaCmd.ExecuteNonQuery();
+
+                // Create all tables
+                EnsureAllTablesExist();
+            }
         }
 
         // Call this once at app start to ensure all tables exist
@@ -24,73 +44,85 @@ namespace GymManagementSystem.DAL
             using var conn = GetConnection();
             conn.Open();
 
-            // Create all tables in the correct order (considering foreign key dependencies)
-            var commands = new[]
+            using var transaction = conn.BeginTransaction();
+            try
             {
-                // Admins table
-                @"CREATE TABLE IF NOT EXISTS Admins (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Username TEXT NOT NULL UNIQUE,
-                    PasswordHash TEXT NOT NULL
-                );",
-                
-                // Trainers table (independent table)
-                @"CREATE TABLE IF NOT EXISTS Trainers (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    TrainerId TEXT NOT NULL UNIQUE,
-                    FullName TEXT NOT NULL,
-                    ContactNumber TEXT,
-                    Specialty TEXT
-                );",
-                
-                // Equipment table (independent table)
-                @"CREATE TABLE IF NOT EXISTS Equipment (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    EquipmentId TEXT NOT NULL UNIQUE,
-                    Name TEXT NOT NULL,
-                    Quantity INTEGER NOT NULL DEFAULT 0,
-                    Condition TEXT
-                );",
-                
-                // Members table (references Trainers)
-                @"CREATE TABLE IF NOT EXISTS Members (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    MemberId TEXT NOT NULL UNIQUE,
-                    FullName TEXT NOT NULL,
-                    TrainerName TEXT,
-                    JoinDate TEXT,
-                    SubscriptionType TEXT,
-                    ContactNumber TEXT,
-                    MedicalHistory TEXT
-                );",
-                
-                // Payments table (references Members)
-                @"CREATE TABLE IF NOT EXISTS Payments (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    PaymentId TEXT NOT NULL UNIQUE,
-                    MemberId INTEGER NOT NULL,
-                    Amount REAL NOT NULL DEFAULT 0.0,
-                    Date TEXT NOT NULL,
-                    FOREIGN KEY (MemberId) REFERENCES Members(Id) ON DELETE CASCADE
-                );",
-                
-                // Attendance table (references Members)
-                @"CREATE TABLE IF NOT EXISTS Attendance (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    MemberId INTEGER NOT NULL,
-                    Date TEXT NOT NULL,
-                    TimeIn TEXT,
-                    TimeOut TEXT,
-                    FOREIGN KEY (MemberId) REFERENCES Members(Id) ON DELETE CASCADE,
-                    UNIQUE(MemberId, Date)
-                );"
-            };
+                // Create all tables in the correct order (considering foreign key dependencies)
+                var commands = new[]
+                {
+                    // Admins table
+                    @"CREATE TABLE IF NOT EXISTS Admins (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        Username TEXT NOT NULL UNIQUE,
+                        PasswordHash TEXT NOT NULL
+                    );",
+                    
+                    // Trainers table (independent table)
+                    @"CREATE TABLE IF NOT EXISTS Trainers (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        TrainerId TEXT NOT NULL UNIQUE,
+                        FullName TEXT NOT NULL,
+                        ContactNumber TEXT,
+                        Specialty TEXT
+                    );",
+                    
+                    // Equipment table (independent table)
+                    @"CREATE TABLE IF NOT EXISTS Equipment (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        EquipmentId TEXT NOT NULL UNIQUE,
+                        Name TEXT NOT NULL,
+                        Quantity INTEGER NOT NULL DEFAULT 0,
+                        Condition TEXT
+                    );",
+                    
+                    // Members table (references Trainers)
+                    @"CREATE TABLE IF NOT EXISTS Members (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        MemberId TEXT NOT NULL UNIQUE,
+                        FullName TEXT NOT NULL,
+                        TrainerName TEXT,
+                        JoinDate TEXT,
+                        SubscriptionType TEXT,
+                        ContactNumber TEXT,
+                        MedicalHistory TEXT
+                    );",
+                    
+                    // Payments table (references Members)
+                    @"CREATE TABLE IF NOT EXISTS Payments (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        PaymentId TEXT NOT NULL UNIQUE,
+                        MemberId INTEGER NOT NULL,
+                        Amount REAL NOT NULL DEFAULT 0.0,
+                        Date TEXT NOT NULL,
+                        FOREIGN KEY (MemberId) REFERENCES Members(Id) ON DELETE CASCADE
+                    );",
+                    
+                    // Attendance table (references Members)
+                    @"CREATE TABLE IF NOT EXISTS Attendance (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        MemberId INTEGER NOT NULL,
+                        Date TEXT NOT NULL,
+                        TimeIn TEXT,
+                        TimeOut TEXT,
+                        FOREIGN KEY (MemberId) REFERENCES Members(Id) ON DELETE CASCADE,
+                        UNIQUE(MemberId, Date)
+                    );"
+                };
 
-            foreach (var command in commands)
+                foreach (var command in commands)
+                {
+                    using var cmd = conn.CreateCommand();
+                    cmd.Transaction = transaction;
+                    cmd.CommandText = command;
+                    cmd.ExecuteNonQuery();
+                }
+
+                transaction.Commit();
+            }
+            catch
             {
-                using var cmd = conn.CreateCommand();
-                cmd.CommandText = command;
-                cmd.ExecuteNonQuery();
+                transaction.Rollback();
+                throw;
             }
         }
 
@@ -139,18 +171,30 @@ CREATE TABLE IF NOT EXISTS Admins (
             return columns;
         }
 
-        // Helper method to execute a query and return the number of affected rows
+        // Enhanced ExecuteNonQuery with transaction support
         public static int ExecuteNonQuery(string query, params SqliteParameter[] parameters)
         {
             using var conn = GetConnection();
             conn.Open();
-            using var cmd = conn.CreateCommand();
-            cmd.CommandText = query;
-            if (parameters != null)
+            using var transaction = conn.BeginTransaction();
+            try
             {
-                cmd.Parameters.AddRange(parameters);
+                using var cmd = conn.CreateCommand();
+                cmd.Transaction = transaction;
+                cmd.CommandText = query;
+                if (parameters != null)
+                {
+                    cmd.Parameters.AddRange(parameters);
+                }
+                var result = cmd.ExecuteNonQuery();
+                transaction.Commit();
+                return result;
             }
-            return cmd.ExecuteNonQuery();
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
         }
 
         // Helper method to execute a query and return a single value
@@ -195,14 +239,45 @@ CREATE TABLE IF NOT EXISTS Admins (
             return results;
         }
 
-        // Database maintenance methods
-        public static void VacuumDatabase()
+        // Enhanced method for batch operations
+        public static void ExecuteBatch(List<(string query, SqliteParameter[] parameters)> operations)
         {
             using var conn = GetConnection();
             conn.Open();
-            using var cmd = conn.CreateCommand();
-            cmd.CommandText = "VACUUM";
-            cmd.ExecuteNonQuery();
+            using var transaction = conn.BeginTransaction();
+            try
+            {
+                foreach (var (query, parameters) in operations)
+                {
+                    using var cmd = conn.CreateCommand();
+                    cmd.Transaction = transaction;
+                    cmd.CommandText = query;
+                    if (parameters != null)
+                    {
+                        cmd.Parameters.AddRange(parameters);
+                    }
+                    cmd.ExecuteNonQuery();
+                }
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
+        }
+
+        // Database maintenance methods
+        public static void VacuumDatabase()
+        {
+            lock (_lock)
+            {
+                using var conn = GetConnection();
+                conn.Open();
+                using var cmd = conn.CreateCommand();
+                cmd.CommandText = "VACUUM";
+                cmd.ExecuteNonQuery();
+            }
         }
 
         public static long GetDatabaseSize()
@@ -215,119 +290,64 @@ CREATE TABLE IF NOT EXISTS Admins (
             return result != null ? Convert.ToInt64(result) : 0;
         }
 
-        // Method to backup database (simple file copy approach)
-        public static bool BackupDatabase(string backupPath)
-        {
-            try
-            {
-                // Get the current database file path
-                string currentDbPath = "gym.db";
+        // Enhanced backup method
+        
 
-                // Ensure the backup directory exists
-                string backupDir = Path.GetDirectoryName(backupPath);
-                if (!string.IsNullOrEmpty(backupDir) && !Directory.Exists(backupDir))
-                {
-                    Directory.CreateDirectory(backupDir);
-                }
-
-                // Copy the database file
-                File.Copy(currentDbPath, backupPath, true);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                // Log the exception or handle it as needed
-                Console.WriteLine($"Backup failed: {ex.Message}");
-                return false;
-            }
-        }
-
-        // Method to restore database (simple file copy approach)
+        // Method to restore database
         public static bool RestoreDatabase(string backupPath)
         {
-            try
+            lock (_lock)
             {
-                if (!File.Exists(backupPath))
+                try
                 {
-                    throw new FileNotFoundException("Backup file not found");
+                    if (!File.Exists(backupPath))
+                    {
+                        throw new FileNotFoundException("Backup file not found");
+                    }
+
+                    string currentDbPath = "gym.db";
+
+                    // Close all connections before restoring
+                    SqliteConnection.ClearAllPools();
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+
+                    // Copy the backup file to replace current database
+                    File.Copy(backupPath, currentDbPath, true);
+
+                    // Reinitialize database
+                    InitializeDatabase();
+
+                    return true;
                 }
-
-                string currentDbPath = "gym.db";
-
-                // Close all connections before restoring
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-
-                // Copy the backup file to replace current database
-                File.Copy(backupPath, currentDbPath, true);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                // Log the exception or handle it as needed
-                Console.WriteLine($"Restore failed: {ex.Message}");
-                return false;
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Restore failed: {ex.Message}");
+                    return false;
+                }
             }
         }
 
-        // Alternative backup method using SQL commands
-        public static bool BackupDatabaseWithSql(string backupPath)
+        // Method to clear connection pool (helps with database locking)
+        public static void ClearConnectionPool()
+        {
+            SqliteConnection.ClearAllPools();
+        }
+
+        // Method to check database integrity
+        public static bool CheckDatabaseIntegrity()
         {
             try
             {
-                using var sourceConn = GetConnection();
-                using var backupConn = new SqliteConnection($"Data Source={backupPath}");
-
-                sourceConn.Open();
-                backupConn.Open();
-
-                // Get all table names
-                var tables = new List<string>();
-                using var cmd = sourceConn.CreateCommand();
-                cmd.CommandText = "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'";
-                using var reader = cmd.ExecuteReader();
-                while (reader.Read())
-                {
-                    tables.Add(reader.GetString(0));
-                }
-                reader.Close();
-
-                // Copy each table
-                foreach (var table in tables)
-                {
-                    // Get table schema
-                    cmd.CommandText = $"SELECT sql FROM sqlite_master WHERE name='{table}'";
-                    var createSql = cmd.ExecuteScalar()?.ToString();
-
-                    if (!string.IsNullOrEmpty(createSql))
-                    {
-                        // Create table in backup database
-                        using var backupCmd = backupConn.CreateCommand();
-                        backupCmd.CommandText = createSql;
-                        backupCmd.ExecuteNonQuery();
-
-                        // Copy data
-                        cmd.CommandText = $"SELECT * FROM {table}";
-                        using var dataReader = cmd.ExecuteReader();
-
-                        while (dataReader.Read())
-                        {
-                            var columnValues = new object[dataReader.FieldCount];
-                            dataReader.GetValues(columnValues);
-
-                            var insertSql = $"INSERT INTO {table} VALUES ({string.Join(",", columnValues.Select(v => v == null ? "NULL" : $"'{v}'"))})";
-                            backupCmd.CommandText = insertSql;
-                            backupCmd.ExecuteNonQuery();
-                        }
-                        dataReader.Close();
-                    }
-                }
-
-                return true;
+                using var conn = GetConnection();
+                conn.Open();
+                using var cmd = conn.CreateCommand();
+                cmd.CommandText = "PRAGMA integrity_check";
+                var result = cmd.ExecuteScalar()?.ToString();
+                return result == "ok";
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine($"SQL Backup failed: {ex.Message}");
                 return false;
             }
         }
@@ -348,6 +368,27 @@ CREATE TABLE IF NOT EXISTS Admins (
         public static string GetCurrentTime()
         {
             return DateTime.Now.ToString("HH:mm:ss");
+        }
+
+        // Method to generate unique IDs
+        public static string GenerateUniqueId(string prefix)
+        {
+            return $"{prefix}{DateTime.Now:yyyyMMddHHmmss}{new Random().Next(100, 999)}";
+        }
+
+        // Method to test database connection
+        public static bool TestConnection()
+        {
+            try
+            {
+                using var conn = GetConnection();
+                conn.Open();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

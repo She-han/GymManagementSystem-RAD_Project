@@ -240,13 +240,14 @@
                     <!-- Left: Mark Attendance -->
                     <StackPanel Grid.Column="0" Margin="0,0,0,0" VerticalAlignment="Top" >
                         <Button Tag ="✍️"
-                                Content="Mark Attendance"
-                                Style="{StaticResource LargerPanelButton}"
-                                FontSize="24"
-                                Height="200"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                BorderThickness="0"/>
+                            Content="Mark Attendance"
+                            Style="{StaticResource LargerPanelButton}"
+                            FontSize="24"
+                            Height="200"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            BorderThickness="0"
+                            Click="MarkAttendance_Click"/>
                     </StackPanel>
                     <!-- Center: Make Payment -->
                     <StackPanel Grid.Column="1" Margin="0,0,0,0" VerticalAlignment="Top">
