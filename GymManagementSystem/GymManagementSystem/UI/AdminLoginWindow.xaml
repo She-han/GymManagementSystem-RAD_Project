@@ -9,14 +9,14 @@
         <!-- Drop Shadow Effect for Card -->
         <DropShadowEffect x:Key="DropShadow"
                           BlurRadius="25"
-                          Color="#88000000"
+                          Color="#33000000"
                           Direction="270"
                           ShadowDepth="0"
-                          Opacity="0.5"/>
+                          Opacity="0.3"/>
         <!-- Modern Button Style -->
         <Style x:Key="ModernButton" TargetType="Button">
-            <Setter Property="Background" Value="#FF2ec4b6"/> 
-            <Setter Property="Foreground" Value="#232526"/>
+            <Setter Property="Background" Value="#FF2ec4b6"/>
+            <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="18"/>
@@ -82,12 +82,12 @@
         <!-- Modern TextBox Style -->
         <Style x:Key="ModernTextBox" TargetType="TextBox">
             <Setter Property="SnapsToDevicePixels" Value="True"/>
-            <Setter Property="BorderBrush" Value="Gray"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" Value="#272a36"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Background" Value="White"/>
             <Setter Property="Padding" Value="8,2"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -114,12 +114,12 @@
         <!-- Modern PasswordBox Style -->
         <Style x:Key="ModernPasswordBox" TargetType="PasswordBox">
             <Setter Property="SnapsToDevicePixels" Value="True"/>
-            <Setter Property="BorderBrush" Value="Gray"/> 
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" Value="#272a36"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Background" Value="White"/>
             <Setter Property="Padding" Value="8,2"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -148,18 +148,18 @@
         <!-- Fullscreen Gradient Background -->
         <Grid.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#262b38" Offset="0.0"/>
-                <GradientStop Color="#262b38" Offset="1.0"/>
+                <GradientStop Color="#E9ECEF" Offset="0.0"/>
+                <GradientStop Color="#CCCCCC" Offset="1.0"/>
             </LinearGradientBrush>
         </Grid.Background>
-
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2.5*"/>
             <ColumnDefinition Width="3.5*"/>
         </Grid.ColumnDefinitions>
 
         <!-- Left: Application Name/Logo -->
-        <Border Grid.Column="0" CornerRadius="0,30,30,0" Margin="0,32,727,31" Background="#262b38" Effect="{StaticResource DropShadow}" Grid.ColumnSpan="2">
+        <Border Grid.Column="0" CornerRadius="0,30,30,0" Margin="0,32,727,31" Background="White" Effect="{StaticResource DropShadow}" Grid.ColumnSpan="2">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                 <TextBlock Text="FlexFit"
                            Foreground="#FF46E8C1"
@@ -169,13 +169,13 @@
                            Margin="-120,0,0,-10"
                            TextWrapping="Wrap"/>
                 <TextBlock Text="Gym Management System"
-                           Foreground="#FFBFC0C0"
+                           Foreground="#6C757D"
                            FontSize="40"
                            FontFamily="Segoe UI"
                            Margin="-120,0,0,0"
                            TextWrapping="Wrap"/>
                 <TextBlock Text="Welcome to your all-in-one gym management platform."
-                           Foreground="#FF8A8A8A"
+                           Foreground="#868E96"
                            FontSize="20"
                            FontFamily="Segoe UI"
                            Margin="-120,0,0,0"
@@ -187,7 +187,7 @@
         <!-- Right: Login/Signup -->
         <Grid Grid.Column="1">
             <!-- Card-like effect -->
-            <Border Background="#1e2027" CornerRadius="30" Margin="240,80,49,80" Padding="40" >
+            <Border Background="White" CornerRadius="30" Margin="240,80,49,80" Padding="40" BorderThickness="2"  >
                 <Grid>
                     <!-- Login Panel -->
                     <Grid x:Name="LoginGrid" Visibility="Visible">
@@ -200,7 +200,7 @@
                                        Margin="0,0,0,32"
                                        FontFamily="Segoe UI Semibold"/>
                             <TextBlock Text="Username"
-                                       Foreground="#BFC0C0"
+                                       Foreground="#495057"
                                        FontSize="16"
                                        Margin="0,0,0,4"
                                        FontFamily="Segoe UI"/>
@@ -209,7 +209,7 @@
                                      Height="38"
                                      Style="{StaticResource ModernTextBox}"/>
                             <TextBlock Text="Password"
-                                       Foreground="#BFC0C0"
+                                       Foreground="#495057"
                                        FontSize="16"
                                        Margin="0,0,0,4"
                                        FontFamily="Segoe UI"/>
@@ -223,7 +223,7 @@
                             <TextBlock Text="Don't have an account?"
                                        HorizontalAlignment="Center"
                                        Margin="0,32,0,0"
-                                       Foreground="#FFBFC0C0"
+                                       Foreground="#6C757D"
                                        FontSize="14"
                                        FontFamily="Segoe UI"/>
                             <Button Content="Sign Up"
@@ -243,7 +243,7 @@
                                        Margin="0,0,0,32"
                                        FontFamily="Segoe UI Semibold"/>
                             <TextBlock Text="Username"
-                                       Foreground="#BFC0C0"
+                                       Foreground="#495057"
                                        FontSize="16"
                                        Margin="0,0,0,4"
                                        FontFamily="Segoe UI"/>
@@ -252,7 +252,7 @@
                                      Height="38"
                                      Style="{StaticResource ModernTextBox}"/>
                             <TextBlock Text="Password"
-                                       Foreground="#BFC0C0"
+                                       Foreground="#495057"
                                        FontSize="16"
                                        Margin="0,0,0,4"
                                        FontFamily="Segoe UI"/>
@@ -261,7 +261,7 @@
                                          Height="38"
                                          Style="{StaticResource ModernPasswordBox}"/>
                             <TextBlock Text="Confirm Password"
-                                       Foreground="#BFC0C0"
+                                       Foreground="#495057"
                                        FontSize="16"
                                        Margin="0,0,0,4"
                                        FontFamily="Segoe UI"/>
@@ -281,7 +281,7 @@
                 </Grid>
             </Border>
             <Border x:Name="NotificationPanel"
-                Background="#FF232526"
+                Background="White"
                 CornerRadius="12"
                 Padding="16,8"
                 VerticalAlignment="Center"
@@ -291,17 +291,17 @@
                 Effect="{StaticResource DropShadow}"
                 Opacity="0"
                 Panel.ZIndex="1000">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                            <TextBlock x:Name="NotificationIcon"
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock x:Name="NotificationIcon"
                            FontSize="22"
                            VerticalAlignment="Center"
                            Margin="0,0,8,0"/>
-                            <TextBlock x:Name="NotificationText"
-                           Foreground="#FFFAFAFA"
+                    <TextBlock x:Name="NotificationText"
+                           Foreground="#495057"
                            FontSize="16"
                            FontFamily="Segoe UI"
                            VerticalAlignment="Center"/>
-                        </StackPanel>
+                </StackPanel>
             </Border>
         </Grid>
     </Grid>
