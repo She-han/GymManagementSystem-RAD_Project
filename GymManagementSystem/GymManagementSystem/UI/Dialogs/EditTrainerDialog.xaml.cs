@@ -4,21 +4,45 @@ using System.Windows.Controls;
 using GymManagementSystem.Models;
 using GymManagementSystem.DAL;
 using Microsoft.Data.Sqlite;
-using GymManagementSystem.Services;
 
 namespace GymManagementSystem.UI.Dialogs
 {
-    public partial class AddTrainerDialog : Window
+    public partial class EditTrainerDialog : Window
     {
-        public AddTrainerDialog()
+        private Trainer currentTrainer;
+
+        public EditTrainerDialog(Trainer trainer)
         {
             InitializeComponent();
-            TrainerIdText.Text = TrainerService.GetNextTrainerId();
+            currentTrainer = trainer;
+            LoadTrainerData();
         }
 
-        private void Add_Click(object sender, RoutedEventArgs e)
+        private void LoadTrainerData()
         {
-            string trainerId = TrainerIdText.Text.Trim();
+            TrainerIdText.Text = currentTrainer.TrainerId;
+            FullNameText.Text = currentTrainer.FullName;
+            ContactText.Text = currentTrainer.ContactNumber ?? "";
+            EmailText.Text = currentTrainer.Email ?? "";
+            ExperienceText.Text = currentTrainer.Experience ?? "";
+            
+
+            // Set specialty
+            if (!string.IsNullOrWhiteSpace(currentTrainer.Specialty))
+            {
+                foreach (ComboBoxItem item in SpecialtyCombo.Items)
+                {
+                    if (item.Content.ToString() == currentTrainer.Specialty)
+                    {
+                        SpecialtyCombo.SelectedItem = item;
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void Update_Click(object sender, RoutedEventArgs e)
+        {
             string fullName = FullNameText.Text.Trim();
             string contact = ContactText.Text.Trim();
             string email = EmailText.Text.Trim();
@@ -31,7 +55,7 @@ namespace GymManagementSystem.UI.Dialogs
             }
 
             // Validation
-            if (string.IsNullOrWhiteSpace(trainerId) || string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(contact))
+            if (string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(contact))
             {
                 MessageBox.Show("Please fill all required fields (marked with *).", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -53,44 +77,35 @@ namespace GymManagementSystem.UI.Dialogs
                 using var transaction = conn.BeginTransaction();
                 try
                 {
-                    // Check if trainer ID already exists
-                    var checkCmd = new SqliteCommand("SELECT COUNT(*) FROM Trainers WHERE TrainerId = @trainerId", conn);
-                    checkCmd.Transaction = transaction;
-                    checkCmd.Parameters.AddWithValue("@trainerId", trainerId);
-
-                    if (Convert.ToInt32(checkCmd.ExecuteScalar()) > 0)
-                    {
-                        MessageBox.Show("Trainer ID already exists. Please use a different ID.", "Duplicate ID", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        transaction.Rollback();
-                        return;
-                    }
-
-                    // Insert trainer with current date as JoinDate
                     var cmd = new SqliteCommand(@"
-                        INSERT INTO Trainers (TrainerId, FullName, ContactNumber, Specialty, Experience, Email, JoinDate) 
-                        VALUES (@trainerId, @fullName, @contact, @specialty, @experience, @email, @joinDate)", conn);
+                        UPDATE Trainers SET 
+                            FullName = @fullName,
+                            ContactNumber = @contact,
+                            Email = @email,
+                            Specialty = @specialty,
+                            Experience = @experience
+                        WHERE Id = @id", conn);
 
                     cmd.Transaction = transaction;
-                    cmd.Parameters.AddWithValue("@trainerId", trainerId);
+                    cmd.Parameters.AddWithValue("@id", currentTrainer.Id);
                     cmd.Parameters.AddWithValue("@fullName", fullName);
                     cmd.Parameters.AddWithValue("@contact", contact);
+                    cmd.Parameters.AddWithValue("@email", string.IsNullOrWhiteSpace(email) ? (object)DBNull.Value : email);
                     cmd.Parameters.AddWithValue("@specialty", string.IsNullOrWhiteSpace(specialty) ? (object)DBNull.Value : specialty);
                     cmd.Parameters.AddWithValue("@experience", string.IsNullOrWhiteSpace(experience) ? (object)DBNull.Value : experience);
-                    cmd.Parameters.AddWithValue("@email", string.IsNullOrWhiteSpace(email) ? (object)DBNull.Value : email);
-                    cmd.Parameters.AddWithValue("@joinDate", DateTime.Now.ToString("yyyy-MM-dd")); // Auto-set current date
 
                     int result = cmd.ExecuteNonQuery();
 
                     if (result > 0)
                     {
                         transaction.Commit();
-                        MessageBox.Show("Trainer added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("Trainer updated successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                         DialogResult = true;
                     }
                     else
                     {
                         transaction.Rollback();
-                        MessageBox.Show("Failed to add trainer.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("Failed to update trainer.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
                 catch (Exception ex)
@@ -101,7 +116,7 @@ namespace GymManagementSystem.UI.Dialogs
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error adding trainer: {ex.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error updating trainer: {ex.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

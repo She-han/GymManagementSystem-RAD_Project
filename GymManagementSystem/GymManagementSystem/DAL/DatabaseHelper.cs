@@ -63,7 +63,8 @@ namespace GymManagementSystem.DAL
                         TrainerId TEXT NOT NULL UNIQUE,
                         FullName TEXT NOT NULL,
                         ContactNumber TEXT,
-                        Specialty TEXT
+                        Specialty TEXT,
+                        Experience TEXT
                     );",
                     
                     // Equipment table (independent table)

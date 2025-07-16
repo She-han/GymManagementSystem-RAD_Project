@@ -295,9 +295,35 @@
                 </ScrollViewer>
             </Grid>
 
-            <!-- Member Management Content (initially hidden) -->
-            <Grid x:Name="MemberManagementContent" Visibility="Collapsed">
-                <local:MemberManagementControl/>
+            <!-- Make sure you have these Grid sections in your main content area -->
+            <Grid x:Name="MainContent">
+             
+
+                <!-- Member Management Content -->
+                <Grid x:Name="MemberManagementContent" Visibility="Collapsed">
+                    <local:MemberManagementControl/>
+                </Grid>
+
+                <!-- Trainer Management Content -->
+                <Grid x:Name="TrainerManagementContent" Visibility="Collapsed">
+                    <local:TrainerManagementControl/>
+                </Grid>
+
+                <!-- Future content sections -->
+                <!-- Payment Management Content -->
+                <!-- <Grid x:Name="PaymentManagementContent" Visibility="Collapsed"> -->
+                <!--     <local:PaymentManagementControl/> -->
+                <!-- </Grid> -->
+
+                <!-- Equipment Management Content -->
+                <!-- <Grid x:Name="EquipmentManagementContent" Visibility="Collapsed"> -->
+                <!--     <local:EquipmentManagementControl/> -->
+                <!-- </Grid> -->
+
+                <!-- Settings Content -->
+                <!-- <Grid x:Name="SettingsContent" Visibility="Collapsed"> -->
+                <!--     <local:SettingsControl/> -->
+                <!-- </Grid> -->
             </Grid>
         </Grid>
 

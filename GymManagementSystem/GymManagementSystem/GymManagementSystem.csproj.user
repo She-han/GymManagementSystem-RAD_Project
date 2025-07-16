@@ -20,13 +20,22 @@
     <Compile Update="UI\Dialogs\EditMemberDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="UI\Dialogs\EditTrainerDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="UI\Dialogs\MarkAttendanceDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="UI\Dialogs\ViewMemberDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="UI\Dialogs\ViewTrainerDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="UI\MemberManagementControl.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="UI\TrainerManagementControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

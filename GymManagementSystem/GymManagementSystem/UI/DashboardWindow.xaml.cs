@@ -24,6 +24,9 @@ namespace GymManagementSystem.UI
             InitializeComponent();
             CurrentUserText.Text = username;
             LoadDashboardData();
+
+            // Ensure dashboard is shown initially
+            ShowDashboard();
         }
 
         private void LoadDashboardData()
@@ -72,53 +75,91 @@ namespace GymManagementSystem.UI
             }
         }
 
+        // Helper method to hide all content sections
+        private void HideAllContent()
+        {
+            DashboardContent.Visibility = Visibility.Collapsed;
+            MemberManagementContent.Visibility = Visibility.Collapsed;
+            TrainerManagementContent.Visibility = Visibility.Collapsed;
+            // Add other content sections here as you create them
+            // PaymentManagementContent.Visibility = Visibility.Collapsed;
+            // EquipmentManagementContent.Visibility = Visibility.Collapsed;
+            // SettingsContent.Visibility = Visibility.Collapsed;
+        }
+
+        private void ShowDashboard()
+        {
+            HideAllContent();
+            DashboardContent.Visibility = Visibility.Visible;
+        }
+
+        private void ShowMemberManagement()
+        {
+            HideAllContent();
+            MemberManagementContent.Visibility = Visibility.Visible;
+        }
+
+        private void ShowTrainerManagement()
+        {
+            HideAllContent();
+            TrainerManagementContent.Visibility = Visibility.Visible;
+        }
+
+        // Sidebar click handlers
         private void Dashboard_Click(object sender, RoutedEventArgs e)
         {
-            // Show dashboard content and hide others
-            DashboardContent.Visibility = Visibility.Visible;
-            MemberManagementContent.Visibility = Visibility.Collapsed;
-            // Refresh dashboard data
-            LoadDashboardData();
+            ShowDashboard();
+            LoadDashboardData(); // Refresh dashboard data
         }
 
         private void Members_Click(object sender, RoutedEventArgs e)
         {
-            // Hide dashboard content and show member management
-            DashboardContent.Visibility = Visibility.Collapsed;
-            MemberManagementContent.Visibility = Visibility.Visible;
+            ShowMemberManagement();
         }
 
         private void Trainers_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Open Trainers management window/page
-            MessageBox.Show("Trainers page coming soon!");
+            ShowTrainerManagement();
         }
 
         private void Payments_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Open Payments management window/page
+            // TODO: Implement when PaymentManagementContent is created
+            // HideAllContent();
+            // PaymentManagementContent.Visibility = Visibility.Visible;
             MessageBox.Show("Payments page coming soon!");
         }
 
         private void Equipments_Click(object sender, RoutedEventArgs e)
         {
+            // TODO: Implement when EquipmentManagementContent is created
+            // HideAllContent();
+            // EquipmentManagementContent.Visibility = Visibility.Visible;
             MessageBox.Show("Equipments page coming soon!");
         }
 
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Open Settings window/page
+            // TODO: Implement when SettingsContent is created
+            // HideAllContent();
+            // SettingsContent.Visibility = Visibility.Visible;
             MessageBox.Show("Settings page coming soon!");
         }
 
         private void Logout_Click(object sender, RoutedEventArgs e)
         {
-            // Logout logic
-            var login = new AdminLoginWindow();
-            login.Show();
-            this.Close();
+            var result = MessageBox.Show("Are you sure you want to logout?", "Confirm Logout",
+                MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                var login = new AdminLoginWindow();
+                login.Show();
+                this.Close();
+            }
         }
 
+        // Dashboard quick action handlers
         private void MarkAttendance_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new MarkAttendanceDialog();
@@ -132,8 +173,7 @@ namespace GymManagementSystem.UI
             dialog.Owner = this;
             if (dialog.ShowDialog() == true)
             {
-                // Refresh dashboard data after adding member
-                LoadDashboardData();
+                LoadDashboardData(); // Refresh dashboard data after adding member
             }
         }
 
@@ -143,8 +183,7 @@ namespace GymManagementSystem.UI
             dialog.Owner = this;
             if (dialog.ShowDialog() == true)
             {
-                // Refresh dashboard data after adding trainer
-                LoadDashboardData();
+                LoadDashboardData(); // Refresh dashboard data after adding trainer
             }
         }
 
