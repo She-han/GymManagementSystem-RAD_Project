@@ -73,7 +73,8 @@ namespace GymManagementSystem.DAL
                         EquipmentId TEXT NOT NULL UNIQUE,
                         Name TEXT NOT NULL,
                         Quantity INTEGER NOT NULL DEFAULT 0,
-                        Condition TEXT
+                        Condition TEXT,
+                        Category TEXT
                     );",
                     
                     // Members table (references Trainers)

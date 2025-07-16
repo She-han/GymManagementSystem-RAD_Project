@@ -13,5 +13,6 @@ namespace GymManagementSystem.Models
         public string Name { get; set; } = "";
         public int Quantity { get; set; }
         public string? Condition { get; set; }
+        public string? Category { get; set; }
     }
 }
