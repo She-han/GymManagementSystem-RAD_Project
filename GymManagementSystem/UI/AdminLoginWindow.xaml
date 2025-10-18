@@ -1,0 +1,308 @@
+﻿<Window x:Class="GymManagementSystem.AdminLoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="FlexFit Version 1.0"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        ResizeMode="CanMinimize">
+    <Window.Resources>
+        <!-- Drop Shadow Effect for Card -->
+        <DropShadowEffect x:Key="DropShadow"
+                          BlurRadius="25"
+                          Color="#33000000"
+                          Direction="270"
+                          ShadowDepth="0"
+                          Opacity="0.3"/>
+        <!-- Modern Button Style -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#FF2ec4b6"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="0,0,0,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="10"
+                                BorderThickness="0"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FF46E8C1"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#FF18a999"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Link Button Style -->
+        <Style x:Key="LinkButton" TargetType="Button">
+            <Setter Property="Foreground" Value="#FF2ec4b6"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <TextBlock Text="{TemplateBinding Content}"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   TextDecorations="Underline"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#FF2ec4b6"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Foreground" Value="#FF18a999"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Modern TextBox Style -->
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Padding" Value="8,2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter Property="BorderBrush" Value="#FF46E8C1"/>
+                                <Setter Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Modern PasswordBox Style -->
+        <Style x:Key="ModernPasswordBox" TargetType="PasswordBox">
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Padding" Value="8,2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter Property="BorderBrush" Value="#FF46E8C1"/>
+                                <Setter Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <!-- Fullscreen Gradient Background -->
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#E9ECEF" Offset="0.0"/>
+                <GradientStop Color="#CCCCCC" Offset="1.0"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2.5*"/>
+            <ColumnDefinition Width="3.5*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left: Application Name/Logo -->
+        <Border Grid.Column="0" CornerRadius="0,30,30,0" Margin="0,32,727,31" Background="White" Effect="{StaticResource DropShadow}" Grid.ColumnSpan="2">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="FlexFit"
+                           Foreground="#FF46E8C1"
+                           FontSize="86"
+                           FontWeight="Bold"
+                           FontFamily="Segoe UI "
+                           Margin="-120,0,0,-10"
+                           TextWrapping="Wrap"/>
+                <TextBlock Text="Gym Management System"
+                           Foreground="#6C757D"
+                           FontSize="40"
+                           FontFamily="Segoe UI"
+                           Margin="-120,0,0,0"
+                           TextWrapping="Wrap"/>
+                <TextBlock Text="Welcome to your all-in-one gym management platform."
+                           Foreground="#868E96"
+                           FontSize="20"
+                           FontFamily="Segoe UI"
+                           Margin="-120,0,0,0"
+                           TextWrapping="Wrap"
+                           TextAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Right: Login/Signup -->
+        <Grid Grid.Column="1">
+            <!-- Card-like effect -->
+            <Border Background="White" CornerRadius="30" Margin="240,80,49,80" Padding="40" BorderThickness="2"  >
+                <Grid>
+                    <!-- Login Panel -->
+                    <Grid x:Name="LoginGrid" Visibility="Visible">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="400">
+                            <TextBlock Text="Admin Login"
+                                       FontWeight="Bold"
+                                       FontSize="32"
+                                       Foreground="#FF2ec4b6"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,0,0,32"
+                                       FontFamily="Segoe UI Semibold"/>
+                            <TextBlock Text="Username"
+                                       Foreground="#495057"
+                                       FontSize="16"
+                                       Margin="0,0,0,4"
+                                       FontFamily="Segoe UI"/>
+                            <TextBox x:Name="UsernameTextBox"
+                                     Margin="0,0,0,20"
+                                     Height="38"
+                                     Style="{StaticResource ModernTextBox}"/>
+                            <TextBlock Text="Password"
+                                       Foreground="#495057"
+                                       FontSize="16"
+                                       Margin="0,0,0,4"
+                                       FontFamily="Segoe UI"/>
+                            <PasswordBox x:Name="PasswordBox"
+                                         Margin="0,0,0,32"
+                                         Height="38"
+                                         Style="{StaticResource ModernPasswordBox}"/>
+                            <Button Content="Login"
+                                    Click="Login_Click"
+                                    Style="{StaticResource ModernButton}"/>
+                            <TextBlock Text="Don't have an account?"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,32,0,0"
+                                       Foreground="#6C757D"
+                                       FontSize="14"
+                                       FontFamily="Segoe UI"/>
+                            <Button Content="Sign Up"
+                                    Click="ShowSignup_Click"
+                                    Style="{StaticResource LinkButton}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Signup Panel -->
+                    <Grid x:Name="SignupGrid" Visibility="Collapsed">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="400">
+                            <TextBlock Text="Admin Signup"
+                                       FontWeight="Bold"
+                                       FontSize="32"
+                                       Foreground="#FF46E8C1"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,0,0,32"
+                                       FontFamily="Segoe UI Semibold"/>
+                            <TextBlock Text="Username"
+                                       Foreground="#495057"
+                                       FontSize="16"
+                                       Margin="0,0,0,4"
+                                       FontFamily="Segoe UI"/>
+                            <TextBox x:Name="SignupUsernameTextBox"
+                                     Margin="0,0,0,20"
+                                     Height="38"
+                                     Style="{StaticResource ModernTextBox}"/>
+                            <TextBlock Text="Password"
+                                       Foreground="#495057"
+                                       FontSize="16"
+                                       Margin="0,0,0,4"
+                                       FontFamily="Segoe UI"/>
+                            <PasswordBox x:Name="SignupPasswordBox"
+                                         Margin="0,0,0,20"
+                                         Height="38"
+                                         Style="{StaticResource ModernPasswordBox}"/>
+                            <TextBlock Text="Confirm Password"
+                                       Foreground="#495057"
+                                       FontSize="16"
+                                       Margin="0,0,0,4"
+                                       FontFamily="Segoe UI"/>
+                            <PasswordBox x:Name="SignupConfirmPasswordBox"
+                                         Margin="0,0,0,32"
+                                         Height="38"
+                                         Style="{StaticResource ModernPasswordBox}"/>
+                            <Button Content="Sign Up"
+                                    Click="Signup_Click"
+                                    Style="{StaticResource ModernButton}"/>
+                            <Button Content="Back to Login"
+                                    Click="ShowLogin_Click"
+                                    Margin="0,24,0,0"
+                                    Style="{StaticResource LinkButton}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+            <Border x:Name="NotificationPanel"
+                Background="White"
+                CornerRadius="12"
+                Padding="16,8"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                Margin="0,30,0,0"
+                Visibility="Collapsed"
+                Effect="{StaticResource DropShadow}"
+                Opacity="0"
+                Panel.ZIndex="1000">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <TextBlock x:Name="NotificationIcon"
+                           FontSize="22"
+                           VerticalAlignment="Center"
+                           Margin="0,0,8,0"/>
+                    <TextBlock x:Name="NotificationText"
+                           Foreground="#495057"
+                           FontSize="16"
+                           FontFamily="Segoe UI"
+                           VerticalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>
