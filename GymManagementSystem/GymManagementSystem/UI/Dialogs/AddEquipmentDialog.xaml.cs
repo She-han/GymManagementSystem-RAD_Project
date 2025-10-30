@@ -12,10 +12,12 @@ namespace GymManagementSystem.UI.Dialogs
     public partial class AddEquipmentDialog : Window
     {
         public string LastError { get; set; }
+        private readonly IEntityFactory _entityFactory;
 
         public AddEquipmentDialog()
         {
             InitializeComponent();
+            _entityFactory = new EntityFactory();
             EquipmentIdText.Text = EquipmentService.GetNextEquipmentId();
         }
 
@@ -30,8 +32,21 @@ namespace GymManagementSystem.UI.Dialogs
         private void Add_Click(object sender, RoutedEventArgs e)
         {
             string name = NameText.Text.Trim();
-            string condition = ConditionText.Text.Trim();
             string quantityText = QuantityText.Text.Trim();
+
+            // Get category from ComboBox
+            string category = "";
+            if (CategoryCombo.SelectedItem is System.Windows.Controls.ComboBoxItem selectedCategory)
+            {
+                category = selectedCategory.Content.ToString();
+            }
+
+            // Get condition from ComboBox
+            string condition = "";
+            if (ConditionCombo.SelectedItem is System.Windows.Controls.ComboBoxItem selectedCondition)
+            {
+                condition = selectedCondition.Content.ToString();
+            }
 
             // Validation
             if (string.IsNullOrWhiteSpace(name))
@@ -64,65 +79,59 @@ namespace GymManagementSystem.UI.Dialogs
                 return;
             }
 
-            var equipment = new Equipment
-            {
-                EquipmentId = EquipmentIdText.Text,
-                Name = name,
-                Quantity = quantity,
-                Condition = string.IsNullOrWhiteSpace(condition) ? null : condition
-            };
-
             try
             {
-                using var conn = DatabaseHelper.GetConnection();
-                conn.Open();
-
                 // Check if equipment with same name already exists
-                var checkCmd = conn.CreateCommand();
-                checkCmd.CommandText = "SELECT COUNT(*) FROM Equipment WHERE Name = @name";
-                checkCmd.Parameters.AddWithValue("@name", equipment.Name);
-                long exists = (long)checkCmd.ExecuteScalar();
-
-                if (exists > 0)
+                using (var conn = DatabaseHelper.GetConnection())
                 {
-                    var result = MessageBox.Show(
-                        $"Equipment '{equipment.Name}' already exists. Do you want to add it anyway?",
-                        "Duplicate Equipment",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Question);
+                    conn.Open();
+                    var checkCmd = conn.CreateCommand();
+                    checkCmd.CommandText = "SELECT COUNT(*) FROM Equipment WHERE Name = @name";
+                    checkCmd.Parameters.AddWithValue("@name", name);
+                    long exists = (long)checkCmd.ExecuteScalar();
 
-                    if (result == MessageBoxResult.No)
+                    if (exists > 0)
                     {
-                        NameText.Focus();
-                        NameText.SelectAll();
-                        return;
+                        var result = MessageBox.Show(
+                            $"Equipment '{name}' already exists. Do you want to add it anyway?",
+                            "Duplicate Equipment",
+                            MessageBoxButton.YesNo,
+                            MessageBoxImage.Question);
+
+                        if (result == MessageBoxResult.No)
+                        {
+                            NameText.Focus();
+                            NameText.SelectAll();
+                            return;
+                        }
                     }
                 }
 
-                var cmd = conn.CreateCommand();
-                cmd.CommandText = "INSERT INTO Equipment (EquipmentId, Name, Quantity, Condition) VALUES (@id, @name, @qty, @cond)";
-                cmd.Parameters.AddWithValue("@id", equipment.EquipmentId);
-                cmd.Parameters.AddWithValue("@name", equipment.Name);
-                cmd.Parameters.AddWithValue("@qty", equipment.Quantity);
-                cmd.Parameters.AddWithValue("@cond", equipment.Condition ?? (object)DBNull.Value);
+                // Use Factory Pattern to create Equipment
+                var equipment = _entityFactory.CreateEquipment(
+                    EquipmentIdText.Text,
+                    name,
+                    quantity,
+                    string.IsNullOrWhiteSpace(condition) ? null : condition,
+                    string.IsNullOrWhiteSpace(category) ? null : category
+                );
 
-                int rowsAffected = cmd.ExecuteNonQuery();
-
-                if (rowsAffected > 0)
+                // Use Factory Pattern to insert Equipment
+                if (_entityFactory.InsertEquipment(equipment, out string errorMessage))
                 {
                     MessageBox.Show("Equipment added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     DialogResult = true;
                 }
                 else
                 {
-                    LastError = "Failed to add equipment - no rows affected.";
-                    ShowError("Failed to add equipment. Please try again.");
+                    LastError = errorMessage;
+                    ShowError($"Failed to add equipment: {errorMessage}");
                 }
             }
-            catch (SqliteException ex)
+            catch (ArgumentException ex)
             {
-                LastError = $"Database error: {ex.Message}";
-                ShowError($"Database error: {ex.Message}");
+                LastError = $"Validation error: {ex.Message}";
+                ShowError($"Validation error: {ex.Message}");
             }
             catch (Exception ex)
             {

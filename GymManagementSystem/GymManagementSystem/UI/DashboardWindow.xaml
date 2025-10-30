@@ -161,7 +161,8 @@
                 <Button Tag="🏋️" Content="Trainers" Style="{StaticResource SidebarButton}" Click="Trainers_Click"/>
                 <Button Tag="💳" Content="Payments" Style="{StaticResource SidebarButton}" Click="Payments_Click"/>
                 <Button Tag="🛠️" Content="Equipments" Style="{StaticResource SidebarButton}" Click="Equipments_Click"/>
-                <Button Tag="⚙️" Content="Settings" Style="{StaticResource SidebarButton}" Click="Settings_Click"/>
+                <Button Tag="📊" Content="Reports" Style="{StaticResource SidebarButton}" Click="Reports_Click"/>
+               
                 <Button Tag="🚪" Content="Logout" Style="{StaticResource SidebarButton}" Click="Logout_Click" />
                 <StackPanel VerticalAlignment="Bottom" Margin="0,300,0,0">
                     <TextBlock Text="© 2025 FlexFit" Foreground="#999999" FontSize="12" HorizontalAlignment="Center" Margin="0,16,0,0"/>
@@ -310,15 +311,17 @@
                 </Grid>
 
                 <!-- Future content sections -->
-                <!-- Payment Management Content -->
-                <!-- <Grid x:Name="PaymentManagementContent" Visibility="Collapsed"> -->
-                <!--     <local:PaymentManagementControl/> -->
-                <!-- </Grid> -->
+                <!-- Payment Management Content will open as a separate window -->
 
                 <!-- Equipment Management Content -->
-                <!-- <Grid x:Name="EquipmentManagementContent" Visibility="Collapsed"> -->
-                <!--     <local:EquipmentManagementControl/> -->
-                <!-- </Grid> -->
+                <Grid x:Name="EquipmentManagementContent" Visibility="Collapsed">
+                    <local:EquipmentManagementControl/>
+                </Grid>
+
+                <!-- Report Management Content -->
+                <Grid x:Name="ReportManagementContent" Visibility="Collapsed">
+                    <local:ReportManagementControl/>
+                </Grid>
 
                 <!-- Settings Content -->
                 <!-- <Grid x:Name="SettingsContent" Visibility="Collapsed"> -->

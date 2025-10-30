@@ -3,26 +3,64 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using GymManagementSystem.DAL;
-using Microsoft.Data.Sqlite;
+using GymManagementSystem.Models;
+
 
 namespace GymManagementSystem.Services
 {
-    public static class PaymentService
+    using Microsoft.Data.Sqlite;
+    using System;
+    using System.Windows;
+
+
+
+
+    public class InsertData
     {
-        public static string GetNextPaymentId()
+        public static void AddPayment(Payment payment)
         {
             using var conn = DatabaseHelper.GetConnection();
             conn.Open();
-            var cmd = new SqliteCommand("SELECT PaymentId FROM Payments ORDER BY Id DESC LIMIT 1", conn);
-            var lastId = cmd.ExecuteScalar() as string;
-            int nextNum = 1;
-            if (!string.IsNullOrEmpty(lastId) && lastId.Length >= 6)
+
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = @"INSERT INTO Payments (PaymentId, MemberId, Amount, Date, Status)
+                            VALUES (@PaymentId, @MemberId, @Amount, @Date, @Status);";
+            cmd.Parameters.AddWithValue("@PaymentId", payment.PaymentId);
+            cmd.Parameters.AddWithValue("@MemberId", payment.MemberId);
+            cmd.Parameters.AddWithValue("@Amount", payment.Amount);
+            cmd.Parameters.AddWithValue("@Date", payment.Date);
+            cmd.Parameters.AddWithValue("@Status", payment.Status ?? "");
+
+            cmd.ExecuteNonQuery();
+        }
+    }
+
+    public static class PaymentService
+    {
+
+        public static List<Payment> GetAllPament()
+        {
+            var payment = new List<Payment>();
+            using var conn = DatabaseHelper.GetConnection();
+            conn.Open();
+
+            var cmd = new SqliteCommand("SELECT * FROM Payments", conn);
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                if (int.TryParse(lastId.Substring(3), out int parsedNum))
-                    nextNum = parsedNum + 1;
+                payment.Add(new Payment
+                {
+                    Id = reader.GetInt32(0),
+                    PaymentId = reader.GetString(1),
+                    MemberId = reader.GetInt32(2),
+                    Amount = reader.GetDouble(3),
+                    Date = reader.GetString(4),
+                    Status = reader.IsDBNull(5) ? null : reader.GetString(5)
+                });
             }
-            return $"PAY{nextNum:D3}";
+            return payment;
         }
     }
 }

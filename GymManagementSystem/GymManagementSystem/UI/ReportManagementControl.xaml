@@ -1,0 +1,168 @@
+<UserControl x:Class="GymManagementSystem.UI.ReportManagementControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="#F5F5F5">
+    <UserControl.Resources>
+        <DropShadowEffect x:Key="CardShadow" BlurRadius="8" Color="#33000000" ShadowDepth="1" Direction="270" Opacity="0.15"/>
+
+        <!-- Report Card Style -->
+        <Style x:Key="ReportCard" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Margin" Value="0,0,20,20"/>
+            <Setter Property="MinWidth" Value="250"/>
+            <Setter Property="MinHeight" Value="180"/>
+            <Setter Property="Effect" Value="{StaticResource CardShadow}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <!-- Generate Button Style -->
+        <Style x:Key="GenerateButton" TargetType="Button">
+            <Setter Property="Background" Value="#FF2ec4b6"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FF46E8C1"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#FF18a999"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- DatePicker Style -->
+        <Style x:Key="ModernDatePicker" TargetType="DatePicker">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="Height" Value="35"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Text="Report Management" 
+                   FontSize="28" FontWeight="Bold" 
+                   Foreground="#333333" Margin="0,0,0,20"/>
+
+        <!-- Date Range Filter -->
+        <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,20" Effect="{StaticResource CardShadow}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Start Date:" FontSize="14" Foreground="#666666" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <DatePicker Grid.Column="1" x:Name="StartDatePicker" Style="{StaticResource ModernDatePicker}"/>
+
+                <TextBlock Grid.Column="3" Text="End Date:" FontSize="14" Foreground="#666666" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <DatePicker Grid.Column="4" x:Name="EndDatePicker" Style="{StaticResource ModernDatePicker}"/>
+
+                <Button Grid.Column="6" Content="Clear " MaxWidth="50"
+                        Background="#FFe74c3c" Foreground="White" 
+                        FontSize="14" Padding="15,8,8,8" BorderThickness="0" 
+                        Cursor="Hand" Click="ClearFilter_Click">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- Report Types Section -->
+        <TextBlock Grid.Row="2" Text="Select Report Type" 
+                   FontSize="20" FontWeight="Bold" 
+                   Foreground="#333333" Margin="0,0,0,15"/>
+
+        <!-- Report Cards -->
+        <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
+            <WrapPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <!-- Member Report Card -->
+                <Border Style="{StaticResource ReportCard}" MouseLeftButtonUp="MemberReport_Click">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="👥" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                        <TextBlock Text="Member Report" FontSize="18" FontWeight="Bold" Foreground="#333333" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                        <TextBlock Text="Generate comprehensive" FontSize="12" Foreground="#666666" HorizontalAlignment="Center"/>
+                        <TextBlock Text="member data report" FontSize="12" Foreground="#666666" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                        <Button Content="Generate PDF" Style="{StaticResource GenerateButton}" Click="GenerateMemberReport_Click"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Equipment Report Card -->
+                <Border Style="{StaticResource ReportCard}" MouseLeftButtonUp="EquipmentReport_Click">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="🛠️" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                        <TextBlock Text="Equipment Report" FontSize="18" FontWeight="Bold" Foreground="#333333" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                        <TextBlock Text="Generate equipment" FontSize="12" Foreground="#666666" HorizontalAlignment="Center"/>
+                        <TextBlock Text="inventory report" FontSize="12" Foreground="#666666" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                        <Button Content="Generate PDF" Style="{StaticResource GenerateButton}" Click="GenerateEquipmentReport_Click"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Trainer Report Card -->
+                <Border Style="{StaticResource ReportCard}" MouseLeftButtonUp="TrainerReport_Click">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="🏋️" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                        <TextBlock Text="Trainer Report" FontSize="18" FontWeight="Bold" Foreground="#333333" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                        <TextBlock Text="Generate trainer" FontSize="12" Foreground="#666666" HorizontalAlignment="Center"/>
+                        <TextBlock Text="details report" FontSize="12" Foreground="#666666" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                        <Button Content="Generate PDF" Style="{StaticResource GenerateButton}" Click="GenerateTrainerReport_Click"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Payment Report Card -->
+                <Border Style="{StaticResource ReportCard}" MouseLeftButtonUp="PaymentReport_Click">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="💳" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                        <TextBlock Text="Payment Report" FontSize="18" FontWeight="Bold" Foreground="#333333" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                        <TextBlock Text="Generate payment" FontSize="12" Foreground="#666666" HorizontalAlignment="Center"/>
+                        <TextBlock Text="transaction report" FontSize="12" Foreground="#666666" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                        <Button Content="Generate PDF" Style="{StaticResource GenerateButton}" Click="GeneratePaymentReport_Click"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Complete Report Card -->
+                <Border Style="{StaticResource ReportCard}" Background="#FFF9F9F9" MouseLeftButtonUp="CompleteReport_Click">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="📊" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                        <TextBlock Text="Complete Report" FontSize="18" FontWeight="Bold" Foreground="#333333" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                        <TextBlock Text="Generate all reports" FontSize="12" Foreground="#666666" HorizontalAlignment="Center"/>
+                        <TextBlock Text="in one document" FontSize="12" Foreground="#666666" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                        <Button Content="Generate PDF" Background="#FF2ec4b6" Style="{StaticResource GenerateButton}" Click="GenerateCompleteReport_Click"/>
+                    </StackPanel>
+                </Border>
+            </WrapPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

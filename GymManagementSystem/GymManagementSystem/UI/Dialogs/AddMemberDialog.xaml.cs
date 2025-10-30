@@ -16,10 +16,12 @@ namespace GymManagementSystem.UI.Dialogs
     {
         public string LastError { get; set; }
         private Dictionary<string, string> trainerMap = new Dictionary<string, string>();
+        private readonly IEntityFactory _entityFactory;
 
         public AddMemberDialog()
         {
             InitializeComponent();
+            _entityFactory = new EntityFactory();
             MemberIdText.Text = MemberService.GetNextMemberId();
             LoadTrainers();
         }
@@ -134,89 +136,43 @@ namespace GymManagementSystem.UI.Dialogs
                 return;
             }
 
-            // Check if member ID already exists
-            if (MemberIdExists(MemberIdText.Text))
-            {
-                ShowError("Member ID already exists. Please try again.");
-                MemberIdText.Text = MemberService.GetNextMemberId();
-                return;
-            }
-
-            var member = new Member
-            {
-                MemberId = MemberIdText.Text,
-                FullName = fullName,
-                ContactNumber = contact,
-                TrainerName = trainerName,
-                SubscriptionType = subType,
-                JoinDate = DateTime.Now.ToString("yyyy-MM-dd"),
-                MedicalHistory = string.IsNullOrWhiteSpace(medicalHistory) ? null : medicalHistory
-            };
-
             try
             {
-                using var conn = DatabaseHelper.GetConnection();
-                conn.Open();
+                // Use Factory Pattern to create Member
+                var member = _entityFactory.CreateMember(
+                    MemberIdText.Text,
+                    fullName,
+                    contact,
+                    trainerName,
+                    subType,
+                    string.IsNullOrWhiteSpace(medicalHistory) ? null : medicalHistory
+                );
 
-                using var transaction = conn.BeginTransaction();
-                try
+                // Use Factory Pattern to insert Member
+                if (_entityFactory.InsertMember(member, out string errorMessage))
                 {
-                    var cmd = conn.CreateCommand();
-                    cmd.Transaction = transaction;
-                    cmd.CommandText = @"INSERT INTO Members (MemberId, FullName, TrainerName, JoinDate, SubscriptionType, ContactNumber, MedicalHistory) 
-                                       VALUES (@id, @name, @trainer, @date, @type, @contact, @medical)";
-
-                    cmd.Parameters.AddWithValue("@id", member.MemberId);
-                    cmd.Parameters.AddWithValue("@name", member.FullName);
-                    cmd.Parameters.AddWithValue("@trainer", member.TrainerName ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@date", member.JoinDate);
-                    cmd.Parameters.AddWithValue("@type", member.SubscriptionType);
-                    cmd.Parameters.AddWithValue("@contact", member.ContactNumber);
-                    cmd.Parameters.AddWithValue("@medical", member.MedicalHistory ?? (object)DBNull.Value);
-
-                    int result = cmd.ExecuteNonQuery();
-
-                    if (result > 0)
-                    {
-                        transaction.Commit();
-                        ShowSuccess("Member added successfully!");
-                        DialogResult = true;
-                    }
-                    else
-                    {
-                        transaction.Rollback();
-                        LastError = "Failed to add member - no rows affected.";
-                        ShowError("Failed to add member. Please try again.");
-                    }
+                    ShowSuccess("Member added successfully!");
+                    DialogResult = true;
                 }
-                catch (Exception ex)
+                else
                 {
-                    transaction.Rollback();
-                    throw;
+                    LastError = errorMessage;
+                    if (errorMessage == "Member ID already exists")
+                    {
+                        MemberIdText.Text = MemberService.GetNextMemberId();
+                    }
+                    ShowError($"Failed to add member: {errorMessage}");
                 }
+            }
+            catch (ArgumentException ex)
+            {
+                LastError = $"Validation error: {ex.Message}";
+                ShowError($"Validation error: {ex.Message}");
             }
             catch (Exception ex)
             {
                 LastError = $"Failed to add member: {ex.Message}";
-                ShowError($"Database error: {ex.Message}");
-            }
-        }
-
-        private bool MemberIdExists(string memberId)
-        {
-            try
-            {
-                using var conn = DatabaseHelper.GetConnection();
-                conn.Open();
-
-                var cmd = new SqliteCommand("SELECT COUNT(*) FROM Members WHERE MemberId = @id", conn);
-                cmd.Parameters.AddWithValue("@id", memberId);
-
-                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
-            }
-            catch
-            {
-                return false;
+                ShowError($"An unexpected error occurred: {ex.Message}");
             }
         }
 

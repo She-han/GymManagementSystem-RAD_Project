@@ -10,9 +10,12 @@ namespace GymManagementSystem.UI.Dialogs
 {
     public partial class AddTrainerDialog : Window
     {
+        private readonly IEntityFactory _entityFactory;
+
         public AddTrainerDialog()
         {
             InitializeComponent();
+            _entityFactory = new EntityFactory();
             TrainerIdText.Text = TrainerService.GetNextTrainerId();
         }
 
@@ -47,61 +50,34 @@ namespace GymManagementSystem.UI.Dialogs
 
             try
             {
-                using var conn = DatabaseHelper.GetConnection();
-                conn.Open();
+                // Use Factory Pattern to create Trainer
+                var trainer = _entityFactory.CreateTrainer(
+                    trainerId,
+                    fullName,
+                    contact,
+                    string.IsNullOrWhiteSpace(specialty) ? null : specialty,
+                    string.IsNullOrWhiteSpace(experience) ? null : experience,
+                    string.IsNullOrWhiteSpace(email) ? null : email
+                );
 
-                using var transaction = conn.BeginTransaction();
-                try
+                // Use Factory Pattern to insert Trainer
+                if (_entityFactory.InsertTrainer(trainer, out string errorMessage))
                 {
-                    // Check if trainer ID already exists
-                    var checkCmd = new SqliteCommand("SELECT COUNT(*) FROM Trainers WHERE TrainerId = @trainerId", conn);
-                    checkCmd.Transaction = transaction;
-                    checkCmd.Parameters.AddWithValue("@trainerId", trainerId);
-
-                    if (Convert.ToInt32(checkCmd.ExecuteScalar()) > 0)
-                    {
-                        MessageBox.Show("Trainer ID already exists. Please use a different ID.", "Duplicate ID", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        transaction.Rollback();
-                        return;
-                    }
-
-                    // Insert trainer with current date as JoinDate
-                    var cmd = new SqliteCommand(@"
-                        INSERT INTO Trainers (TrainerId, FullName, ContactNumber, Specialty, Experience, Email, JoinDate) 
-                        VALUES (@trainerId, @fullName, @contact, @specialty, @experience, @email, @joinDate)", conn);
-
-                    cmd.Transaction = transaction;
-                    cmd.Parameters.AddWithValue("@trainerId", trainerId);
-                    cmd.Parameters.AddWithValue("@fullName", fullName);
-                    cmd.Parameters.AddWithValue("@contact", contact);
-                    cmd.Parameters.AddWithValue("@specialty", string.IsNullOrWhiteSpace(specialty) ? (object)DBNull.Value : specialty);
-                    cmd.Parameters.AddWithValue("@experience", string.IsNullOrWhiteSpace(experience) ? (object)DBNull.Value : experience);
-                    cmd.Parameters.AddWithValue("@email", string.IsNullOrWhiteSpace(email) ? (object)DBNull.Value : email);
-                    cmd.Parameters.AddWithValue("@joinDate", DateTime.Now.ToString("yyyy-MM-dd")); // Auto-set current date
-
-                    int result = cmd.ExecuteNonQuery();
-
-                    if (result > 0)
-                    {
-                        transaction.Commit();
-                        MessageBox.Show("Trainer added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                        DialogResult = true;
-                    }
-                    else
-                    {
-                        transaction.Rollback();
-                        MessageBox.Show("Failed to add trainer.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+                    MessageBox.Show("Trainer added successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    DialogResult = true;
                 }
-                catch (Exception ex)
+                else
                 {
-                    transaction.Rollback();
-                    throw;
+                    MessageBox.Show($"Failed to add trainer: {errorMessage}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show($"Validation error: {ex.Message}", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error adding trainer: {ex.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"An unexpected error occurred: {ex.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

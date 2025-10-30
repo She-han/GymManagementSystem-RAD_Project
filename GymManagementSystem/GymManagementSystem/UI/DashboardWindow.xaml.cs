@@ -83,7 +83,8 @@ namespace GymManagementSystem.UI
             TrainerManagementContent.Visibility = Visibility.Collapsed;
             // Add other content sections here as you create them
             // PaymentManagementContent.Visibility = Visibility.Collapsed;
-            // EquipmentManagementContent.Visibility = Visibility.Collapsed;
+            EquipmentManagementContent.Visibility = Visibility.Collapsed;
+            ReportManagementContent.Visibility = Visibility.Collapsed;
             // SettingsContent.Visibility = Visibility.Collapsed;
         }
 
@@ -105,6 +106,25 @@ namespace GymManagementSystem.UI
             TrainerManagementContent.Visibility = Visibility.Visible;
         }
 
+        private void ShowEquipmentManagement()
+        {
+            HideAllContent();
+            EquipmentManagementContent.Visibility = Visibility.Visible;
+        }
+
+        private void ShowReportManagement()
+        {
+            HideAllContent();
+            ReportManagementContent.Visibility = Visibility.Visible;
+        }
+
+        private void ShowPaymentManagement()
+        {
+            // Open payment gateway as a separate window
+            var paymentWindow = new payementGateWay();
+            paymentWindow.ShowDialog();
+        }
+
         // Sidebar click handlers
         private void Dashboard_Click(object sender, RoutedEventArgs e)
         {
@@ -124,18 +144,17 @@ namespace GymManagementSystem.UI
 
         private void Payments_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Implement when PaymentManagementContent is created
-            // HideAllContent();
-            // PaymentManagementContent.Visibility = Visibility.Visible;
-            MessageBox.Show("Payments page coming soon!");
+            ShowPaymentManagement();
         }
 
         private void Equipments_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: Implement when EquipmentManagementContent is created
-            // HideAllContent();
-            // EquipmentManagementContent.Visibility = Visibility.Visible;
-            MessageBox.Show("Equipments page coming soon!");
+            ShowEquipmentManagement();
+        }
+
+        private void Reports_Click(object sender, RoutedEventArgs e)
+        {
+            ShowReportManagement();
         }
 
         private void Settings_Click(object sender, RoutedEventArgs e)
